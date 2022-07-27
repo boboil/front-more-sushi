@@ -1,26 +1,42 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="wrapper">
+    <HeaderComponent/>
+    <div id="app">
+      <router-view/>
+    </div>
+    <FooterComponent/>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import FooterComponent from "@/components/layouts/FooterComponent";
+import HeaderComponent from "@/components/layouts/HeaderComponent";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    FooterComponent,
+    HeaderComponent
+  },
+  data() {
+    return {
+      categories: []
+    }
+  },
+  methods: {
+    getCategories() {
+      return this.axios.get('http://localhost/api/admin-order')
+          .then((response) => {
+            this.categories = response.data.data
+          })
+    }
+  },
+  mounted() {
+    this.getCategories()
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
