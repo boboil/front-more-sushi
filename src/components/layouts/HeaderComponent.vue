@@ -17,19 +17,19 @@
           <nav class="menu">
             <ul>
               <li>
-                <a href="/" class="active">Головна</a>
+                <router-link to="/" active-class="active">Головна</router-link>
               </li>
               <li>
-                <a href="/">Меню</a>
+                <router-link to="/catalog" active-class="active">Меню</router-link>
               </li>
               <li>
                 <a href="/">Акції</a>
               </li>
               <li>
-                <a href="/">Доставка</a>
+                <router-link to="/delivery" active-class="active">Доставка</router-link>
               </li>
               <li>
-                <a href="/">Контакти</a>
+                <router-link to="/contacts" active-class="active">Контакти</router-link>
               </li>
             </ul>
           </nav>
