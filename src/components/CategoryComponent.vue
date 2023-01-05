@@ -12,11 +12,11 @@
              @click="setPageStateOptions(category.slug)">{{ category.title }}</a>
         </div>
         <div class="category-products-list">
-          <div class="product-item" v-for="product in products" :key="product.id"
-               @click="this.$router.push('/product/' + product.slug)">
+          <div class="product-item" v-for="product in products" :key="product.id">
             <div class="product-item-label orange" v-if="product.stock">Акція</div>
             <div class="product-item-label green" v-if="product.latest">Новинка</div>
-            <div class="product-item-photo">
+            <div class="product-item-photo"
+                 @click="this.$router.push('/product/' + product.slug)">
               <img :src="product.main_image"
                    :alt="product.title" loading="lazy">
             </div>
@@ -42,7 +42,7 @@
 											</span>
                 </div>
               </div>
-              <button class="btn green small product-item-add">
+              <button class="btn green small product-item-add" @click="addToCart(product)">
                 в кошик
               </button>
               <!-- <button class="btn orange small product-item-add">
@@ -52,12 +52,6 @@
           </div>
 
         </div>
-        <!-- <button class="loadmore">
-          <span>показати більше</span>
-          <span class="circle"></span>
-          <span class="circle"></span>
-          <span class="circle"></span>
-        </button> -->
       </div>
     </section>
   </main>
@@ -71,7 +65,8 @@ export default {
       categories: [],
       filter: "",
       category: {},
-      products: []
+      products: [],
+      cart: []
     }
   },
   mounted() {
@@ -87,6 +82,13 @@ export default {
         this[key] = windowData[key];
       }
     });
+    if (localStorage.getItem('products')) {
+      try {
+        this.cart = JSON.parse(localStorage.getItem('products'));
+      } catch (e) {
+        localStorage.removeItem('products');
+      }
+    }
   },
   computed: {
     pageStateOptions() {
@@ -96,8 +98,11 @@ export default {
     }
   },
   methods: {
+    addToCart(product) {
+      this.$emit('addToCart', product)
+    },
     getCategories() {
-      return this.axios.get('http://localhost/api/shop/catalog')
+      return this.axios.get(`${this.$API_URL}/api/shop/catalog`)
           .then((response) => {
             this.categories = response.data.data
           }).then(() => {

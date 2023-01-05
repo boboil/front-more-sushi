@@ -1,8 +1,8 @@
 <template>
   <div class="wrapper">
-    <HeaderComponent/>
+    <HeaderComponent :product="cartProducts" />
     <div id="app">
-      <router-view/>
+      <router-view @addToCart="addToCart"/>
     </div>
     <FooterComponent/>
   </div>
@@ -20,20 +20,16 @@ export default {
   },
   data() {
     return {
-      categories: []
+      categories: [],
+      cartProducts: {}
     }
   },
   methods: {
-    getCategories() {
-      return this.axios.get('http://localhost/api/admin-order')
-          .then((response) => {
-            this.categories = response.data.data
-          })
+    addToCart(products) {
+      this.cartProducts = products
     }
   },
-  mounted() {
-    this.getCategories()
-  }
+
 }
 </script>
 

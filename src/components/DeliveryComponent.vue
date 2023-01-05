@@ -3,7 +3,7 @@
     <section class="block-delivery">
       <div class="container">
         <div class="delivery-banner">
-          <img src=".././assets/img/delivery.png" alt="">
+          <img :src="assetImage('delivery', 'png')" alt="delivery-banner">
         </div>
         <div class="delivery-text">
           <h1>
@@ -35,11 +35,14 @@
 </template>
 
 <script>
+import {assetImage} from '@/helpers/helpers'
+
 export default {
-  name: "DeliveryComponent"
+  name: "DeliveryComponent",
+  data() {
+    return {
+      assetImage
+    }
+  },
 }
 </script>
-
-<style scoped>
-
-</style>

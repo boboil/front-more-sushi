@@ -15,9 +15,9 @@
               Ми , як ніхто знаємося на сушi , переконайтесь в цьому i Ви!
             </p>
           </div>
-          <a href="/categories.html" class="btn green">
+          <router-link :to="{ path: 'catalog'}" class="btn green">
             Меню
-          </a>
+          </router-link>
         </div>
         <div class="banner">
           <img src=".././assets/img/home-banner.png" alt="">
@@ -31,81 +31,23 @@
           Меню
         </h2>
         <ul class="categories-list">
-          <li>
-            <a href="/" class="category-item">
+          <li v-for="category in categories" :key="category.id">
+            <router-link :to="`/catalog?filter=${category.slug}`"
+                         class="category-item">
               <div class="category-item-photo">
-                <img src=".././assets/img/temp/category-premium.jpg" alt="">
+                <img :src="category.image"
+                     :alt="category.title">
               </div>
               <div class="category-item-title">
-                Преміум-роли
+                {{ category.title }}
               </div>
-            </a>
-          </li>
-          <li>
-            <a href="/" class="category-item">
-              <div class="category-item-photo">
-                <img src=".././assets//img/temp/category-rolls.jpg" alt="">
-              </div>
-              <div class="category-item-title">
-                Роли
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/" class="category-item">
-              <div class="category-item-photo">
-                <img src=".././assets//img/temp/category-sushi.jpg" alt="">
-              </div>
-              <div class="category-item-title">
-                Суші
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/" class="category-item">
-              <div class="category-item-photo">
-                <img src=".././assets//img/temp/category-sets.jpg" alt="">
-              </div>
-              <div class="category-item-title">
-                Сети
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/" class="category-item">
-              <div class="category-item-photo">
-                <img src=".././assets//img/temp/category-snacks.jpg" alt="">
-              </div>
-              <div class="category-item-title">
-                Закуски
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/" class="category-item">
-              <div class="category-item-photo">
-                <img src=".././assets//img/temp/category-drinks.jpg" alt="">
-              </div>
-              <div class="category-item-title">
-                Напої
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/" class="category-item">
-              <div class="category-item-photo">
-                <img src=".././assets//img/temp/category-salads.jpg" alt="">
-              </div>
-              <div class="category-item-title">
-                Гарніри
-              </div>
-            </a>
+            </router-link>
           </li>
         </ul>
       </div>
     </section>
 
-    <section class="block-category-products">
+    <section class="block-category-products" v-if="roly.length">
       <div class="container">
         <!-- если на странице одной категории то н1 -->
         <h2 class="block-title">
@@ -113,14 +55,17 @@
         </h2>
         <!-- в одной категории тут также блок с подкатегориями -->
         <div class="category-products-list">
-          <div class="product-item">
-            <div class="product-item-label orange">Акция</div>
+          <div class="product-item" v-for="product in roly" :key="product.id"
+               @click="this.$router.push('/product/' + product.slug)">
+            <div class="product-item-label orange" v-if="product.stock">Акція</div>
+            <div class="product-item-label green" v-if="product.latest">Новинка</div>
             <div class="product-item-photo">
-              <img src=".././assets//img/temp/category-rolls.jpg" alt="" loading="lazy">
+              <img :src="product.main_image"
+                   :alt="product.title" loading="lazy">
             </div>
             <div class="product-item-info">
               <div class="product-item-title">
-                Сирний рол з лососем
+                {{ product.title }}
               </div>
               <div class="product-item-descr">
                 <p>
@@ -130,79 +75,11 @@
               </div>
               <div class="product-item-params">
                 <div class="product-item-weight">
-                  260 г
+                  {{ product.weight }} г
                 </div>
                 <div class="product-item-price">
-                  <span class="old-price">155</span>
-                  <span class="current-price">125</span>
-                  <span class="currency">
-												грн
-											</span>
-                </div>
-              </div>
-              <button class="btn green small product-item-add">
-                в кошик
-              </button>
-              <!-- <button class="btn orange small product-item-add">
-                в кошику
-              </button> -->
-            </div>
-          </div>
-          <div class="product-item">
-            <!-- <div class="product-item-label orange">Акция</div> -->
-            <div class="product-item-photo">
-              <img src=".././assets//img/temp/category-rolls.jpg" alt="" loading="lazy">
-            </div>
-            <div class="product-item-info">
-              <div class="product-item-title">
-                Сирний рол з лососем
-              </div>
-              <div class="product-item-descr">
-                <p>
-                  Склад: <br>
-                  рис, водорості норі, сир «Філадельфія», лосось, манго, сир чеддер.&nbsp;
-                </p>
-              </div>
-              <div class="product-item-params">
-                <div class="product-item-weight">
-                  260 г
-                </div>
-                <div class="product-item-price">
-                  <span class="current-price">125</span>
-                  <span class="currency">
-												грн
-											</span>
-                </div>
-              </div>
-              <button class="btn green small product-item-add">
-                в кошик
-              </button>
-              <!-- <button class="btn orange small product-item-add">
-                в кошику
-              </button> -->
-            </div>
-          </div>
-          <div class="product-item">
-            <div class="product-item-label green">Новинка</div>
-            <div class="product-item-photo">
-              <img src=".././assets//img/temp/category-rolls.jpg" alt="" loading="lazy">
-            </div>
-            <div class="product-item-info">
-              <div class="product-item-title">
-                Сирний рол з лососем
-              </div>
-              <div class="product-item-descr">
-                <p>
-                  Склад: <br>
-                  рис, водорості норі, сир «Філадельфія», лосось, манго, сир чеддер.&nbsp;
-                </p>
-              </div>
-              <div class="product-item-params">
-                <div class="product-item-weight">
-                  260 г
-                </div>
-                <div class="product-item-price">
-                  <span class="current-price">155</span>
+                  <span class="old-price" v-if="product.discount">{{ product.discount }}</span>
+                  <span class="current-price">{{ product.price }}</span>
                   <span class="currency">
 												грн
 											</span>
@@ -217,7 +94,7 @@
             </div>
           </div>
         </div>
-        <button class="loadmore">
+        <button class="loadmore" @click="this.$router.push('/catalog?filter=roli')">
           <span>показати більше</span>
           <span class="circle"></span>
           <span class="circle"></span>
@@ -225,20 +102,25 @@
         </button>
       </div>
     </section>
-    <section class="block-category-products">
+    <section class="block-category-products" v-if="sushi.length">
       <div class="container">
+        <!-- если на странице одной категории то н1 -->
         <h2 class="block-title">
           Суші
         </h2>
+        <!-- в одной категории тут также блок с подкатегориями -->
         <div class="category-products-list">
-          <div class="product-item">
-            <div class="product-item-label orange">Акция</div>
+          <div class="product-item" v-for="product in sushi" :key="product.id"
+               @click="this.$router.push('/product/' + product.slug)">
+            <div class="product-item-label orange" v-if="product.stock">Акція</div>
+            <div class="product-item-label green" v-if="product.latest">Новинка</div>
             <div class="product-item-photo">
-              <img src=".././assets//img/temp/category-rolls.jpg" alt="" loading="lazy">
+              <img :src="product.main_image"
+                   :alt="product.title" loading="lazy">
             </div>
             <div class="product-item-info">
               <div class="product-item-title">
-                Сирний рол з лососем
+                {{ product.title }}
               </div>
               <div class="product-item-descr">
                 <p>
@@ -248,79 +130,11 @@
               </div>
               <div class="product-item-params">
                 <div class="product-item-weight">
-                  260 г
+                  {{ product.weight }} г
                 </div>
                 <div class="product-item-price">
-                  <span class="old-price">155</span>
-                  <span class="current-price">125</span>
-                  <span class="currency">
-												грн
-											</span>
-                </div>
-              </div>
-              <button class="btn green small product-item-add">
-                в кошик
-              </button>
-              <!-- <button class="btn orange small product-item-add">
-                в кошику
-              </button> -->
-            </div>
-          </div>
-          <div class="product-item">
-            <!-- <div class="product-item-label orange">Акция</div> -->
-            <div class="product-item-photo">
-              <img src=".././assets//img/temp/category-rolls.jpg" alt="" loading="lazy">
-            </div>
-            <div class="product-item-info">
-              <div class="product-item-title">
-                Сирний рол з лососем
-              </div>
-              <div class="product-item-descr">
-                <p>
-                  Склад: <br>
-                  рис, водорості норі, сир «Філадельфія», лосось, манго, сир чеддер.&nbsp;
-                </p>
-              </div>
-              <div class="product-item-params">
-                <div class="product-item-weight">
-                  260 г
-                </div>
-                <div class="product-item-price">
-                  <span class="current-price">155</span>
-                  <span class="currency">
-												грн
-											</span>
-                </div>
-              </div>
-              <button class="btn green small product-item-add">
-                в кошик
-              </button>
-              <!-- <button class="btn orange small product-item-add">
-                в кошику
-              </button> -->
-            </div>
-          </div>
-          <div class="product-item">
-            <div class="product-item-label green">Новинка</div>
-            <div class="product-item-photo">
-              <img src=".././assets//img/temp/category-rolls.jpg" alt="" loading="lazy">
-            </div>
-            <div class="product-item-info">
-              <div class="product-item-title">
-                Сирний рол з лососем
-              </div>
-              <div class="product-item-descr">
-                <p>
-                  Склад: <br>
-                  рис, водорості норі, сир «Філадельфія», лосось, манго, сир чеддер.&nbsp;
-                </p>
-              </div>
-              <div class="product-item-params">
-                <div class="product-item-weight">
-                  260 г
-                </div>
-                <div class="product-item-price">
-                  <span class="current-price">155</span>
+                  <span class="old-price" v-if="product.discount">{{ product.discount }}</span>
+                  <span class="current-price">{{ product.price }}</span>
                   <span class="currency">
 												грн
 											</span>
@@ -335,7 +149,7 @@
             </div>
           </div>
         </div>
-        <button class="loadmore">
+        <button class="loadmore" @click="this.$router.push('/catalog?filter=susi')">
           <span>показати більше</span>
           <span class="circle"></span>
           <span class="circle"></span>
@@ -377,7 +191,31 @@
 
 <script>
 export default {
-  name: "IndexComponent"
+  name: "IndexComponent",
+  data() {
+    return {
+      categories: [],
+      filter: "",
+      category: {},
+      products: [],
+      roly: [],
+      sushi: [],
+    }
+  },
+  methods: {
+    getCategories() {
+      return this.axios.get(`${this.$API_URL}/api/shop/catalog`)
+          .then((response) => {
+            this.categories = response.data.data
+          }).then(() => {
+            this.roly = this.categories.find(elem => elem.slug === 'roli').products.data
+            this.sushi = this.categories.find(elem => elem.slug === 'susi').products.data
+          })
+    },
+  },
+  mounted() {
+    this.getCategories()
+  }
 }
 </script>
 
