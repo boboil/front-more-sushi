@@ -28,12 +28,12 @@
               {{ product.price }} <span>грн</span>
             </div>
           </div>
-          <button class="btn green small product-item-order">
+          <button
+              class="btn green small product-item-order"
+              @click="addToCart(product)"
+          >
             в кошик
           </button>
-          <!-- <button class="btn orange small product-item-order">
-              в кошику
-          </button> -->
         </div>
       </div>
     </swiper-slide>
@@ -74,6 +74,9 @@ export default {
     };
   },
   methods: {
+    addToCart(product) {
+      this.$emit('addToCart', product)
+    },
     getRelatedProducts() {
       return this.axios.get(`${this.$API_URL}/api/shop/related-products`)
           .then((response) => {

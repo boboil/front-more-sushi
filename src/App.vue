@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <HeaderComponent :product="cartProducts" />
+    <HeaderComponent :product="cartProduct" @cartAdded="clearCartProduct"/>
     <div id="app">
       <router-view @addToCart="addToCart"/>
     </div>
@@ -21,12 +21,15 @@ export default {
   data() {
     return {
       categories: [],
-      cartProducts: {}
+      cartProduct: {}
     }
   },
   methods: {
-    addToCart(products) {
-      this.cartProducts = products
+    addToCart(product) {
+      this.cartProduct = product
+    },
+    clearCartProduct() {
+      this.cartProduct = {}
     }
   },
 
