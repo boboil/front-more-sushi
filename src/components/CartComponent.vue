@@ -2,7 +2,7 @@
   <div v-if="products.length" class="cart" :class="{ 'open' : openCart }">
     <button class="cart-btn" @click="openCart = !openCart">
       <img :src="assetIcon('icon-cart', 'png')" alt="cartIcon">
-      <span>{{ products.length }}</span>
+      <span>{{ fullQuantity }}</span>
     </button>
     <div class="cart-inner">
       <table class="cart-table">
@@ -48,11 +48,18 @@
         </tbody>
       </table>
       <div class="cart-summary">
-        <div class="cart-delivery-annotation">
+        <div
+            v-if="fullPrice < 650"
+            class="cart-delivery-annotation">
           Безкоштовна доставка від 650 грн
         </div>
+        <div
+            v-else
+            class="cart-delivery-annotation">
+          Безкоштовна доставка
+        </div>
         <div class="cart-total">
-          До сплати: <span>{{ fullPrice }} грн</span>
+          До сплати: <span>{{ fullPrice + 80 }} грн</span>
         </div>
       </div>
       <button
@@ -104,14 +111,18 @@ export default {
       }
     },
     addToCart(product) {
-      product.quantity = 1
+      if (Object.keys(product).length === 0) {
+        return;
+      }
       let cartProduct = this.products.find(el => el.id === product.id)
       if (!cartProduct) {
+        product.quantity = 1
         this.products.push(product)
       } else {
         cartProduct.quantity += 1
       }
       this.saveCart()
+      this.$emit('cartAdded')
     },
     saveCart() {
       localStorage.setItem('products', JSON.stringify(this.products))
@@ -126,6 +137,13 @@ export default {
       let sum = 0
       this.products.forEach(({price, quantity}) => {
         sum += price * quantity
+      })
+      return sum
+    },
+    fullQuantity() {
+      let sum = 0
+      this.products.forEach(({quantity}) => {
+        sum += quantity
       })
       return sum
     }

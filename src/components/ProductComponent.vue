@@ -27,38 +27,15 @@
             </div>
             <div class="product-contain">
               <div class="product-contain-title">
-                Склад:
+                Опис:
               </div>
-              <div class="product-contain-list">
-                <a href="/" class="product-contain-item" target="_blank">
-                  <img src="https://tokyo-sushi.com.ua/storage/ingredients/June2022/yuoDIwHhwuSOCTB5LOxP-cropped.jpg"
-                       alt="">
-                  <span>Монако рол </span>
-                </a>
-                <a href="/" class="product-contain-item" target="_blank">
-                  <img src="https://tokyo-sushi.com.ua/storage/ingredients/June2022/H2mMD4gaEBx27hRXvJka-cropped.jpeg"
-                       alt="">
-                  <span>Сирний рол з тунцем </span>
-                </a>
-                <a href="/" class="product-contain-item" target="_blank">
-                  <img src="https://tokyo-sushi.com.ua/storage/ingredients/June2022/jkCLEl6is78vjvS6TUX3-cropped.jpeg"
-                       alt="">
-                  <span>Фелікс рол з мідіями </span>
-                </a>
-                <a href="/" class="product-contain-item" target="_blank">
-                  <img src="https://tokyo-sushi.com.ua/storage/ingredients/June2022/9xNb3Vbn2WffUzZeaydq-cropped.jpg"
-                       alt="">
-                  <span>Філадельфія з запечений лососем </span>
-                </a>
-                <a href="/" class="product-contain-item" target="_blank">
-                  <img src="https://tokyo-sushi.com.ua/storage/ingredients/June2022/f7SCP2EjGsGy43Dy5ZPM-cropped.jpeg"
-                       alt="">
-                  <span>Філадельфія кальмар темпура </span>
-                </a>
-              </div>
+              <div class="product-contain-list" v-html="product.consist"></div>
             </div>
 
-            <button class="btn green product-order">Замовити</button>
+            <button
+                class="btn green product-order"
+                @click="addToCart">Замовити
+            </button>
             <!-- <button class="btn orange product-order">В кошику</button> -->
           </div>
         </div>
@@ -96,6 +73,9 @@ export default {
     this.getProduct()
   },
   methods: {
+    addToCart() {
+      this.$emit('addToCart', this.product)
+    },
     getProduct() {
       let slug = this.$route.params.slug;
       return this.axios.get(`${this.$API_URL}/api/shop/product/${slug}`)

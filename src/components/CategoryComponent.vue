@@ -42,7 +42,9 @@
 											</span>
                 </div>
               </div>
-              <button class="btn green small product-item-add" @click="addToCart(product)">
+              <button
+                  class="btn green small product-item-add"
+                  @click="addToCart(product)">
                 в кошик
               </button>
               <!-- <button class="btn orange small product-item-add">
