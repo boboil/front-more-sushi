@@ -5,7 +5,7 @@
         <div class="product">
           <div class="product-photo">
             <div class="product-label green" v-if="product.latest > 0">
-                Новинка
+              Новинка
             </div>
             <div class="product-label orange" v-if="product.stock > 0">
               Акція
@@ -61,6 +61,7 @@
 
 <script>
 import SliderComponent from "@/components/SliderComponent";
+
 export default {
   name: "ProductComponent",
   components: {SliderComponent},
@@ -81,9 +82,11 @@ export default {
       return this.axios.get(`${this.$API_URL}/api/shop/product/${slug}`)
           .then((response) => {
             this.product = response.data.data
+          }).then(() => {
+            document.title = `Море Суші - ${this.product.title}`;
           })
     }
-  },
+  }
 }
 </script>
 

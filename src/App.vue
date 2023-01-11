@@ -1,8 +1,16 @@
 <template>
   <div class="wrapper">
-    <HeaderComponent :product="cartProduct" @cartAdded="clearCartProduct"/>
+    <HeaderComponent
+        :product="cartProduct"
+        :clear-cart="clear"
+        @cartAdded="clearCartProduct"
+        @cartCleared="cartCleared"
+    />
     <div id="app">
-      <router-view @addToCart="addToCart"/>
+      <router-view
+          @addToCart="addToCart"
+          @clearCart="clearCart"
+      />
     </div>
     <FooterComponent/>
   </div>
@@ -21,7 +29,8 @@ export default {
   data() {
     return {
       categories: [],
-      cartProduct: {}
+      cartProduct: {},
+      clear: false
     }
   },
   methods: {
@@ -30,6 +39,12 @@ export default {
     },
     clearCartProduct() {
       this.cartProduct = {}
+    },
+    cartCleared() {
+      this.clear = false
+    },
+    clearCart() {
+      this.clear = true
     }
   },
 
