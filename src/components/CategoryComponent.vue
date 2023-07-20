@@ -24,10 +24,10 @@
               <div class="product-item-title">
                 {{ product.title }}
               </div>
-              <div class="product-item-descr">
+              <div class="product-item-descr" v-if="product.consist">
                 <p>
                   Склад: <br>
-                  рис, водорості норі, сир «Філадельфія», лосось, манго, сир чеддер.&nbsp;
+                  <span v-html="product.consist" />
                 </p>
               </div>
               <div class="product-item-params">
@@ -44,7 +44,8 @@
               </div>
               <button
                   class="btn green small product-item-add"
-                  @click="addToCart(product)">
+                  @click="addToCart(product)"
+              >
                 в кошик
               </button>
               <!-- <button class="btn orange small product-item-add">
@@ -113,23 +114,33 @@ export default {
             } else {
               this.category = this.categories.find(elem => elem.slug === 'roli')
             }
+            document.title = `Заказать Суши ${this.category.title} Море Суші Сумы. Суші Сети та Роли. Море Суші у Сумах. Замовити з Доставкою до 22-00`;
           }).then(() => {
             this.products = this.category.products.data
           })
     },
     setPageStateOptions(value) {
+      this.category = this.categories.find(elem => elem.slug === value)
       window.history.pushState(
           null,
-          document.title,
+          document.title = `Заказать Суши ${this.category.title} Море Суші Сумы. Суші Сети та Роли. Море Суші у Сумах. Замовити з Доставкою до 22-00`,
           `${window.location.pathname}?filter=${value}`
       );
-      this.category = this.categories.find(elem => elem.slug === value)
       this.products = this.category.products.data
     }
   },
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.product-item {
+  &:hover {
+    cursor: pointer;
+  }
+  .product-item-photo {
+    img {
+      max-height: 239px;
+    }
+  }
+}
 </style>

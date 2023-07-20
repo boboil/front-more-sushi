@@ -20,14 +20,20 @@
             <div class="product-price">
               <div class="old-price" v-if="product.discount > 0">{{ product.discount }}</div>
               <div class="current-price">{{ product.price }}</div>
-              <span>грн</span>
+              <span> грн</span>
             </div>
             <div class="product-weight">
               / {{ product.count }} шт, {{ product.weight }} г
             </div>
-            <div class="product-contain">
+            <div class="product-contain" v-if="product.description">
               <div class="product-contain-title">
                 Опис:
+              </div>
+              <div class="product-contain-list" v-html="product.description"></div>
+            </div>
+            <div class="product-contain" v-if="product.consist">
+              <div class="product-contain-title">
+                Склад:
               </div>
               <div class="product-contain-list" v-html="product.consist"></div>
             </div>

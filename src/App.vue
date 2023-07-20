@@ -12,7 +12,7 @@
           @clearCart="clearCart"
       />
     </div>
-    <FooterComponent/>
+    <FooterComponent />
   </div>
 </template>
 
@@ -50,7 +50,3 @@ export default {
 
 }
 </script>
-
-<style>
-
-</style>

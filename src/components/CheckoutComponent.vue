@@ -53,16 +53,19 @@
             <div class="checkout-related-products">
               <div class="related-slider swiper-container js-related-swiper">
                 <div class="swiper-wrapper">
-                  <SliderComponent/>
+                  <SliderComponent />
                 </div>
               </div>
             </div>
           </div>
           <div class="checkout-summary">
             <div class="checkout-delivery-annotation">
-              Безкоштовна доставка від 650 грн
+              <span v-if="fullPrice < 650"> Безкоштовна доставка від 650 грн</span>
             </div>
             <div class="checkout-total">
+              <div v-if="fullPrice < 650">
+                Доставка: <span>50 грн</span>
+              </div>
               До сплати: <span>{{ fullPrice }} грн</span>
             </div>
           </div>
@@ -104,7 +107,7 @@
                     value="самовивiз"
                     id="order-radio-1"
                 >
-                <label for="order-radio-1"><span></span> Самовивiз (м. Суми, вул. Адреса 1/1)</label>
+                <label for="order-radio-1"><span></span> Самовивiз (м. Суми, Вул. Троїцька 17)</label>
               </div>
               <div class="radio-wrapper">
                 <input
@@ -311,6 +314,7 @@ export default {
       this.products = this.products.filter(el => el.id !== id)
       this.saveCart()
       if (this.products.length === 0) {
+        this.$emit('clearCart')
         this.$router.push('/catalog')
       }
     },
@@ -338,6 +342,9 @@ export default {
       this.products.forEach(({price, quantity}) => {
         sum += price * quantity
       })
+      if (sum < 650) {
+        return sum + 50
+      }
       return sum
     }
   }
