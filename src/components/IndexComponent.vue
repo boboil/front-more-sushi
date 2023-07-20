@@ -55,11 +55,10 @@
         </h2>
         <!-- в одной категории тут также блок с подкатегориями -->
         <div class="category-products-list">
-          <div class="product-item" v-for="product in roly" :key="product.id"
-               @click="this.$router.push('/product/' + product.slug)">
+          <div class="product-item" v-for="product in roly" :key="product.id">
             <div class="product-item-label orange" v-if="product.stock">Акція</div>
             <div class="product-item-label green" v-if="product.latest">Новинка</div>
-            <div class="product-item-photo">
+            <div class="product-item-photo" @click="this.$router.push('/product/' + product.slug)">
               <img :src="product.main_image"
                    :alt="product.title" loading="lazy">
             </div>
@@ -85,12 +84,12 @@
 											</span>
                 </div>
               </div>
-              <button class="btn green small product-item-add">
+              <button
+                  class="btn green small product-item-add"
+                  @click="addToCart(product)"
+              >
                 в кошик
               </button>
-              <!-- <button class="btn orange small product-item-add">
-                в кошику
-              </button> -->
             </div>
           </div>
         </div>
@@ -122,10 +121,10 @@
               <div class="product-item-title">
                 {{ product.title }}
               </div>
-              <div class="product-item-descr">
+              <div class="product-item-descr" v-if="product.consist">
                 <p>
                   Склад: <br>
-                  рис, водорості норі, сир «Філадельфія», лосось, манго, сир чеддер.&nbsp;
+                  <span v-html="product.consist"/>
                 </p>
               </div>
               <div class="product-item-params">
@@ -134,18 +133,18 @@
                 </div>
                 <div class="product-item-price">
                   <span class="old-price" v-if="product.discount">{{ product.discount }}</span>
-                  <span class="current-price">{{ product.price }}</span>
+                  <span class="current-price">{{ product.price }} </span>
                   <span class="currency">
 												грн
 											</span>
                 </div>
               </div>
-              <button class="btn green small product-item-add">
+              <button
+                  class="btn green small product-item-add"
+                  @click="addToCart(product)"
+              >
                 в кошик
               </button>
-              <!-- <button class="btn orange small product-item-add">
-                в кошику
-              </button> -->
             </div>
           </div>
         </div>
@@ -203,6 +202,9 @@ export default {
     }
   },
   methods: {
+    addToCart(product) {
+      this.$emit('addToCart', product)
+    },
     getCategories() {
       return this.axios.get(`${this.$API_URL}/api/shop/catalog`)
           .then((response) => {
@@ -214,11 +216,21 @@ export default {
     },
   },
   mounted() {
+    document.title = `Заказать Суши, Роллы и Пицца Сумы с Доставкой. Преміум Роли та Суші Суми. Піца Суми та Доставка Суші та Піци від Море Суші в Сумах`;
     this.getCategories()
   }
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.product-item {
+  &:hover {
+    cursor: pointer;
+  }
+  .product-item-photo {
+    img {
+      max-height: 239px;
+    }
+  }
+}
 </style>

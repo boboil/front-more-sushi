@@ -39,9 +39,9 @@
           </td>
           <td>
             <div class="cart-product-quantity">
-              <button @click="product.quantity -= 1">-</button>
+              <button @click="updateProductQuantity(product.id, -1)">-</button>
               <input type="number" min="1" v-model="product.quantity">
-              <button @click="product.quantity += 1">+</button>
+              <button @click="updateProductQuantity(product.id, 1)">+</button>
             </div>
           </td>
         </tr>
@@ -79,6 +79,10 @@ export default {
     cartProduct: {
       type: Object,
       default: () => ({})
+    },
+    clearCart: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -91,12 +95,22 @@ export default {
   watch: {
     cartProduct() {
       this.addToCart(this.cartProduct)
+    },
+    clearCart(newVal) {
+      if (newVal) {
+        this.deleteCart()
+      }
     }
   },
   mounted() {
     this.getCart()
   },
   methods: {
+    deleteCart() {
+      this.products = [];
+      this.saveCart()
+      this.$emit('cartCleared')
+    },
     goToCheckout() {
       this.openCart = false
       this.$router.push('/checkout')
@@ -129,6 +143,18 @@ export default {
     },
     removeProduct(id) {
       this.products = this.products.filter(el => el.id !== id)
+      this.saveCart()
+    },
+    updateProductQuantity(id, value) {
+      let product = this.products.find(el => el.id === id)
+      if (product.quantity <= 0 && value < 0) {
+        return;
+      }
+      this.products.find(el => {
+        if (el.id === id) {
+          return el.quantity += value
+        }
+      })
       this.saveCart()
     }
   },

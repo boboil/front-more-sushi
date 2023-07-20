@@ -62,7 +62,12 @@
           </div>
         </div>
         <!-- выводи корзину если есть продукты -->
-        <CartComponent :cart-product="product" @cartAdded="cartAdded"/>
+        <CartComponent
+            :cart-product="product"
+            :clear-cart="clearCart"
+            @cartAdded="cartAdded"
+            @cartCleared="cartCleared"
+        />
       </div>
     </header>
   </div>
@@ -78,6 +83,10 @@ export default {
     product: {
       type: Object,
       default: () => ({})
+    },
+    clearCart: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -90,6 +99,9 @@ export default {
   methods: {
     cartAdded() {
       this.$emit('cartAdded')
+    },
+    cartCleared() {
+      this.$emit('cartCleared')
     }
   }
 }

@@ -1,0 +1,28 @@
+$main-font: 'Montserrat';
+
+$duration: 0.3s;
+
+$body-bg: #fff;
+
+$black: #000;
+$grey: #9a9a9a;
+
+$orange: #f16311;
+
+$green-light: #2db923;
+$green-dark: #196b1f;
+
+$green-gradient: linear-gradient(90deg, $green-light, $green-dark);
+$orange-gradient: linear-gradient(90deg, #ff954e, #ee5905);
+
+$container-padding-x-desktop: 32px;
+$container-padding-x-tablet: 24px;
+$container-padding-x-mobile: 16px;
+
+$container-max-width: 1440px;
+
+$related-slide-width: 315px;
+$related-slide-width-mobile: 260px;
+
+$mobile-max-width: 767px;
+$tablet-max-width: 1023px;

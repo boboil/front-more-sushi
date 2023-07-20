@@ -89,3 +89,16 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.product-item {
+  &:hover {
+    cursor: pointer;
+  }
+  .product-item-photo {
+    img {
+      max-height: 239px;
+      max-width: 239px;
+    }
+  }
+}
+</style>

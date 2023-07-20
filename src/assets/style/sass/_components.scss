@@ -1,0 +1,434 @@
+.btn {
+    color: #fff;
+    padding: 15px 50px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    display: block;
+    min-width: 170px;
+    text-align: center;
+    border: 0;
+    transition: $duration;
+    &.green {
+        background: $green-gradient;
+    }
+    &.orange {
+        background: $orange-gradient;
+    }
+    &.small {
+        // min-width: 120px;
+        // padding: 8px 24px;
+        // font-size: 14px;
+        background: $green-gradient;
+        color: #fff;
+        padding: 7px 10px;
+        border: none;
+        border-radius: 30px;
+        text-transform: uppercase;
+        font-weight: 700;
+        display: block;
+        width: 100px;
+        min-width: 100px;
+        text-align: center;
+        font-size: 12px;
+        cursor: pointer;
+        margin-left: auto;
+        transition: $duration;
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
+}
+
+.block-title {
+    // padding: 36px 0;
+    padding-bottom: 36px;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 36px;
+    width: 100%;
+    @include mobile {
+        // padding: 24px 0;
+        padding-bottom: 24px;
+        font-size: 28px;
+    }
+}
+
+.product-item {
+    transition: $duration;
+    box-shadow: 0;
+    padding: 25px 10px 15px 10px;
+    position: relative;
+    background-color: #fff;
+    &:hover {
+        box-shadow: 3px 5.2px 20.3px 6.8px rgba(0, 4, 2, 0.08);
+        z-index: 2;
+        @include mobile {
+            box-shadow: initial;
+        }
+    }
+    &-label {
+        color: #fff;
+        position: absolute;
+        left: 0;
+        top: 16px;
+        left: -16px;
+        padding: 4px 16px;
+        font-size: 14px;
+        font-weight: 700;
+        @include mobile {
+            font-weight: 400;
+            left: -8px;
+            top: 8px;
+        }
+        &.orange {
+            background: $orange-gradient;
+        }
+        &.green {
+            background: $green-gradient;
+        }
+    }
+    &-info {
+        padding-top: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+    }
+    &-title {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        width: 100%;
+    }
+    &-descr {
+        // padding-top: 12px;
+        min-height: 90px;
+        font-size: 12px;
+        line-height: 17px;
+        width: 100%;
+        p {
+            &:not(:last-child) {
+                margin-bottom: 12px;
+            }
+        }
+    }
+    &-params {
+        display: flex;
+        align-items: baseline;
+        @include mobile {
+            width: 100%;
+        }
+    }
+    &-weight {
+        font-size: 15px;
+        margin-right: 10px;
+        color: $grey;
+    }
+    &-price {
+        font-size: 18px;
+        margin-right: 10px;
+        font-weight: 700;
+        color: $orange;
+        .old-price {
+            font-weight: 400;
+            color: $grey;
+            text-decoration: line-through;
+        }
+        .current-price {
+            font-weight: 700;
+        }
+        .currency {
+            font-size: 12px;
+        }
+    }
+    &-add,
+    &-order {
+        @include mobile {
+            margin-top: 12px;
+        }
+    }
+}
+
+.loadmore {
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    border: 2px solid $orange;
+    border-radius: 25px;
+    padding: 0px 15px;
+    // height: 30px;
+    height: 48px;
+    font-size: 15px;
+    font-weight: 700;
+    color: $grey;
+    transition: $duration;
+    background-color: transparent;
+    @include mobile {
+        margin-top: 32px;
+        padding: 0 24px;
+        border-width: 1px;
+        height: 40px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    &:hover {
+        background-color: #ff954e;
+        color: #fff;
+        .circle {
+            border-color: #fff;
+        }
+    }
+    .circle {
+        width: 10px;
+        height: 10px;
+        display: block;
+        border: 2px solid #ff954e;
+        border-radius: 100%;
+        margin-left: 15px;
+        transition: $duration;
+        @include mobile {
+            width: 6px;
+            height: 6px;
+            border-width: 1px;
+            margin-left: 12px;
+        }
+    }
+}
+
+
+.related-slider {
+
+    &.swiper-container {
+        overflow: hidden;
+        position: relative;
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            background: linear-gradient(90deg, rgba(#fff,0) 0%, rgba(#fff,1) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+    }
+
+    .swiper-slide {
+        width: $related-slide-width;
+        @include mobile {
+            width: $related-slide-width-mobile;
+        }
+    }
+
+    .product-item {
+        padding: 0;
+        &:hover {
+            box-shadow: initial;
+        }
+    }
+
+    .swiper-button {
+        top: 88px;
+        @include mobile {
+            top: 72px;
+        }
+    }
+}
+
+.swiper-button {
+    z-index: 3;
+    color: $orange;
+    margin: 0;
+    // top: 88px;
+}
+
+.swiper-pagination {
+    position: relative;
+    margin-top: 32px;
+    bottom: 0;
+    @include mobile {
+        margin-top: 24px;
+    }
+    &-bullet {
+        border-radius: 0;
+        &-active {
+            background: $orange;
+        }
+    }
+}
+
+
+.checkout,
+.cart {
+    &-table {
+        width: 100%;
+        margin-bottom: auto;
+        @include mobile {
+            border-collapse: collapse;
+        }
+
+        // same as cart
+        th {
+            background-color: rgba($orange, .1);
+            height: 50px;
+            // min-width: 200px;
+            @include mobile {
+                font-size: 14px;
+            }
+            &:first-child {
+                @include mobile {
+                    text-align: right;
+                }
+            }
+        }
+        td {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba($grey, .5);
+            @include mobile {
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+            &:first-child {
+                @include mobile {
+                    // padding-left: 10px;
+                    padding-left: $container-padding-x-mobile;
+                }
+            }
+            &:last-child {
+                @include mobile {
+                    // padding-right: 10px;
+                    padding-right: $container-padding-x-mobile;
+                }
+            }
+        }
+    }
+
+    &-product-info {
+        display: flex;
+        align-items: center;
+        @include mobile {
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            text-align: right;
+        }
+        button {
+            width: 36px;
+            height: 36px;
+            margin-right: 16px;
+            background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' height='25' width='25'%3E%3Cg transform='translate(3.9661017,3.5677966)'%3E%3Cpath d='M -2.5783352e-4,-0.00146808 17.435473,18.212367' stroke='%23f16311' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M -2.5783352e-4,18.212367 17.435473,-0.00146808' stroke='%23f16311' stroke-width='2' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E%0A");
+            background-size: 30px;
+            background-position: center;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+            @include mobile {
+                width: 24px;
+                height: 24px;
+                // margin-right: 8px;
+                background-size: 24px;
+            }
+        }
+        img {
+            width: 80px;
+            margin-right: 16px;
+            @include mobile {
+                // width: 60px;
+                margin-right: 0;
+            }
+        }
+        h3 {
+            font-weight: 400;
+            @include mobile {
+                width: 100%;
+                margin-top: 8px;
+                font-size: 16px;
+            }
+        }
+    }
+    &-product-price {
+        text-align: center;
+        color: $orange;
+        font-size: 18px;
+        font-weight: 700;
+        @include mobile {
+            white-space: nowrap;
+            padding: 0 $container-padding-x-mobile;
+        }
+        span {
+            font-size: 12px;
+        }
+    }
+
+    &-product-quantity {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        button {
+            color: $orange;
+            font-weight: 700;
+            width: 36px;
+            height: 36px;
+            font-size: 24px;
+            @include mobile {
+                width: 30px;
+                height: 30px;
+            }
+        }
+        input {
+            appearance: textfield;
+            text-align: center;
+            height: 36px;
+            border: 0;
+            border-bottom: 1px solid transparent;
+            width: 50px;
+            transition: $duration;
+            font-size: 24px;
+            @include mobile {
+                font-size: 20px;
+                // width: 24px;
+            }
+            &:focus {
+                border-color: $orange;
+            }
+        }
+    }
+    &-summary {
+        margin-top: 48px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        background-color: rgba($orange, .1);
+        padding: 24px;
+        @include mobile {
+            margin-left: -$container-padding-x-mobile;
+            margin-right: -$container-padding-x-mobile;
+            flex-direction: column;
+            align-items: flex-end;
+            padding: $container-padding-x-mobile;
+        }
+    }
+    &-total {
+        font-size: 24px;
+        font-weight: 700;
+        @include mobile {
+            font-size: 20px;
+        }
+        &:not(:only-child) {
+            @include mobile {
+                margin-top: 16px;
+            }
+        }
+        span {
+            color: $orange;
+            margin-left: 10px;
+        }
+    }
+    &-delivery-annotation {
+        color: red;
+        font-size: 18px;
+        @include mobile {
+            font-size: 14px;
+        }
+    }
+}

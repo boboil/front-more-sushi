@@ -24,7 +24,7 @@
             <tr v-for="product in products" :key="product.id">
               <td>
                 <div class="checkout-product-info">
-                  <button></button>
+                  <button @click="removeProduct(product.id)"></button>
                   <img :src="product.main_image" :alt="product.title">
                   <h3>
                     {{ product.title }}
@@ -53,16 +53,19 @@
             <div class="checkout-related-products">
               <div class="related-slider swiper-container js-related-swiper">
                 <div class="swiper-wrapper">
-                  <SliderComponent/>
+                  <SliderComponent />
                 </div>
               </div>
             </div>
           </div>
           <div class="checkout-summary">
             <div class="checkout-delivery-annotation">
-              Безкоштовна доставка від 650 грн
+              <span v-if="fullPrice < 650"> Безкоштовна доставка від 650 грн</span>
             </div>
             <div class="checkout-total">
+              <div v-if="fullPrice < 650">
+                Доставка: <span>50 грн</span>
+              </div>
               До сплати: <span>{{ fullPrice }} грн</span>
             </div>
           </div>
@@ -101,23 +104,23 @@
                     type="radio"
                     hidden
                     checked
-                    value="Самовивiз"
+                    value="самовивiз"
                     id="order-radio-1"
                 >
-                <label for="order-radio-1"><span></span> Самовивiз (м. Суми, вул. Адреса 1/1)</label>
+                <label for="order-radio-1"><span></span> Самовивiз (м. Суми, Вул. Троїцька 17)</label>
               </div>
               <div class="radio-wrapper">
                 <input
                     v-model="customer.delivery"
                     type="radio"
                     hidden
-                    value="Кур'єр"
+                    value="курʼєр"
                     id="order-radio-2"
                 >
                 <label for="order-radio-2"><span></span> Доставка кур'єром</label>
               </div>
               <!-- if delivery -->
-              <div class="delivery-inputs">
+              <div v-if="customer.delivery === 'курʼєр'" class="delivery-inputs">
                 <div class="input-wrapper">
                   <label for="customer_street">Вулиця</label>
                   <input
@@ -176,20 +179,19 @@
                 </h4>
                 <div class="quantity-item">
                   <span>Звичайнi</span>
-                  <button type="button" @click="customer.sticks.standard -=1">–</button>
+                  <button type="button" @click="updateSticks('standard', -1)">–</button>
                   <input
                       v-model="customer.sticks.standard"
                       type="text"
                       disabled
                       min="1"
-                      value="1"
                       max="10"
                   >
-                  <button type="button" @click="customer.sticks.standard +=1">+</button>
+                  <button type="button" @click="updateSticks('standard', 1)">+</button>
                 </div>
                 <div class="quantity-item">
                   <span>Тренувальнi</span>
-                  <button type="button" @click="customer.sticks.educational -=1">–</button>
+                  <button type="button" @click="updateSticks('educational', -1)">–</button>
                   <input
                       v-model="customer.sticks.educational"
                       type="text"
@@ -197,7 +199,7 @@
                       min="0"
                       max="10"
                   >
-                  <button type="button" @click="customer.sticks.educational +=1">+</button>
+                  <button type="button" @click="updateSticks('educational', 1)">+</button>
                 </div>
               </div>
               <div class="checkout-subgroup">
@@ -208,7 +210,7 @@
                       type="radio"
                       checked
                       hidden
-                      value="1"
+                      value="true"
                       id="delivery_time-1"
                   >
                   <label for="delivery_time-1"><span></span> Найближчий час </label>
@@ -217,14 +219,14 @@
                   <input
                       v-model="customer.isAsSoonAsPossible"
                       type="radio"
+                      value="false"
                       hidden
-                      value="2"
                       id="delivery_time-2">
                   <label for="delivery_time-2"><span></span> Запланований час </label>
                 </div>
 
                 <!-- if time -->
-                <div class="date-time-inputs" v-if="customer.isAsSoonAsPossible ==='2'">
+                <div class="date-time-inputs" v-if="customer.isAsSoonAsPossible ==='false'">
                   <div class="input-wrapper">
                     <label for="delivery_date_input">Дата</label>
                     <input
@@ -271,15 +273,15 @@ export default {
       customer: {
         name: '',
         phone: '',
-        delivery: '',
+        delivery: 'самовивiз',
         street: '',
         building: '',
-        payment: '',
+        payment: 'готівка',
         sticks: {
-          standard: 0,
+          standard: 1,
           educational: 0
         },
-        isAsSoonAsPossible: false,
+        isAsSoonAsPossible: 'true',
         time: {
           day: '',
           time: ''
@@ -311,13 +313,27 @@ export default {
     removeProduct(id) {
       this.products = this.products.filter(el => el.id !== id)
       this.saveCart()
+      if (this.products.length === 0) {
+        this.$emit('clearCart')
+        this.$router.push('/catalog')
+      }
     },
     addOrder() {
+      // console.log(this.customer)
       this.axios.post(`${this.$API_URL}/api/shop/add-order`, {
-        customer: this.customer, products: this.products
-      }).then((response) => {
-        console.log(response.data.data)
+        customer: this.customer, products: this.products, sum: this.fullPrice
+      }).then(() => {
+        this.products = [];
+        this.$emit('clearCart')
+      }).then(() => {
+        this.$router.push('/')
       })
+    },
+    updateSticks(stickType, value) {
+      if (this.customer.sticks[stickType] <= 0 && value < 0) {
+        return;
+      }
+      this.customer.sticks[stickType] += value
     }
   },
   computed: {
@@ -326,6 +342,9 @@ export default {
       this.products.forEach(({price, quantity}) => {
         sum += price * quantity
       })
+      if (sum < 650) {
+        return sum + 50
+      }
       return sum
     }
   }
