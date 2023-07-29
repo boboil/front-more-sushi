@@ -10,6 +10,7 @@ import CategoryComponent from "@/components/CategoryComponent";
 import ContactComponent from "@/components/ContactComponent";
 import DeliveryComponent from "@/components/DeliveryComponent";
 import CheckoutComponent from "@/components/CheckoutComponent";
+import StockComponent from "@/components/StockComponent.vue";
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -49,6 +50,12 @@ const routes = [
         meta: { title: 'Оформлення замовлення' },
         component: CheckoutComponent
     },
+    {
+        name: 'stock',
+        path: '/stock',
+        meta: { title: 'Акції' },
+        component: StockComponent
+    },
 ];
 
 const router = VueRouter.createRouter({
@@ -68,7 +75,7 @@ router.beforeEach((to, from, next) => {
 //     optionSuccessStatus:200
 // }
 const app = Vue.createApp(App).use(router).use(VueAxios, axios);
-// app.config.globalProperties.$API_URL = 'https://bot.moresushi.in.ua'
-app.config.globalProperties.$API_URL = 'http://localhost'
+app.config.globalProperties.$API_URL = 'https://bot.moresushi.in.ua'
+// app.config.globalProperties.$API_URL = 'http://localhost'
 app.mount('#app');
 // Vue.prototype.$API_URL = 'http://localhost:8080'

@@ -211,7 +211,6 @@ export default {
             this.categories = response.data.data
           }).then(() => {
             this.roly = this.categories.find(elem => elem.slug === 'roli').products.data
-            this.sushi = this.categories.find(elem => elem.slug === 'susi').products.data
           })
     },
   },
