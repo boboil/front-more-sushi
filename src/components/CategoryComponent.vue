@@ -8,8 +8,8 @@
           {{ category.title }}
         </h1>
         <div class="category-tabs">
-          <a href="#" v-for="(category, key) in categories" :key="key"
-             @click="setPageStateOptions(category.slug)">{{ category.title }}</a>
+          <button v-for="(category, key) in categories" :key="key"
+             @click="setPageStateOptions(category.slug)">{{ category.title }}</button>
         </div>
         <div class="category-products-list">
           <div class="product-item" v-for="product in products" :key="product.id">
@@ -48,9 +48,6 @@
               >
                 в кошик
               </button>
-              <!-- <button class="btn orange small product-item-add">
-                в кошику
-              </button> -->
             </div>
           </div>
 

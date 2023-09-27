@@ -49,9 +49,9 @@
       </table>
       <div class="cart-summary">
         <div
-            v-if="fullPrice < 650"
+            v-if="fullPrice < 550"
             class="cart-delivery-annotation">
-          Безкоштовна доставка від 650 грн
+          Безкоштовна доставка від 550 грн
         </div>
         <div
             v-else
@@ -59,7 +59,7 @@
           Безкоштовна доставка
         </div>
         <div class="cart-total">
-          До сплати: <span>{{ fullPrice + 80 }} грн</span>
+          До сплати: <span>{{ fullPrice }} грн</span>
         </div>
       </div>
       <button
@@ -164,6 +164,9 @@ export default {
       this.products.forEach(({price, quantity}) => {
         sum += price * quantity
       })
+      if (sum < 550) {
+        return sum + 50
+      }
       return sum
     },
     fullQuantity() {

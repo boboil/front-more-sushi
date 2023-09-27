@@ -1,6 +1,5 @@
 <template>
   <main class="content">
-
     <section class="block-category-products">
       <div class="container">
         <!-- если на странице одной категории то н1 -->
@@ -8,8 +7,8 @@
           Акції
         </h1>
         <div class="category-tabs">
-          <a href="#" v-for="(category, key) in categories" :key="key"
-             @click="setPageStateOptions(category.slug)">{{ category.title }}</a>
+          <button v-for="(category, key) in categories" :key="key"
+             @click="setPageStateOptions(category.slug)">{{ category.title }}</button>
         </div>
         <div class="category-products-list">
           <div class="product-item" v-for="product in products" :key="product.id">
@@ -27,7 +26,7 @@
               <div class="product-item-descr" v-if="product.consist">
                 <p>
                   Склад: <br>
-                  <span v-html="product.consist" />
+                  <span v-html="product.consist"/>
                 </p>
               </div>
               <div class="product-item-params">
@@ -48,14 +47,11 @@
               >
                 в кошик
               </button>
-              <!-- <button class="btn orange small product-item-add">
-                в кошику
-              </button> -->
             </div>
           </div>
-
         </div>
       </div>
+      <slot></slot>
     </section>
   </main>
 </template>
@@ -137,6 +133,7 @@ export default {
   &:hover {
     cursor: pointer;
   }
+
   .product-item-photo {
     img {
       max-height: 239px;
