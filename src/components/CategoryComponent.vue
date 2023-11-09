@@ -8,8 +8,14 @@
           {{ category.title }}
         </h1>
         <div class="category-tabs">
-          <button v-for="(category, key) in categories" :key="key"
-             @click="setPageStateOptions(category.slug)">{{ category.title }}</button>
+          <button
+              v-for="(activeCategory, key) in categories"
+              :key="key"
+              :class="{'active': activeCategory.id === category.id}"
+              @click="setPageStateOptions(activeCategory.slug)"
+          >
+            {{ activeCategory.title }}
+          </button>
         </div>
         <div class="category-products-list">
           <div class="product-item" v-for="product in products" :key="product.id">

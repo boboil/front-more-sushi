@@ -2,14 +2,19 @@
   <main class="content">
     <section class="block-category-products">
       <div class="container">
-        <!-- если на странице одной категории то н1 -->
         <h1 class="block-title">
           Акції
         </h1>
-        <div class="category-tabs">
-          <button v-for="(category, key) in categories" :key="key"
-             @click="setPageStateOptions(category.slug)">{{ category.title }}</button>
-        </div>
+        <!--        <div class="category-tabs">-->
+        <!--          <button-->
+        <!--              v-for="(activeCategory, key) in categories"-->
+        <!--              :class="{'active': activeCategory.id === category.id}"-->
+        <!--              :key="key"-->
+        <!--              @click="setPageStateOptions(activeCategory.slug)"-->
+        <!--          >-->
+        <!--            {{ activeCategory.title }}-->
+        <!--          </button>-->
+        <!--        </div>-->
         <div class="category-products-list">
           <div class="product-item" v-for="product in products" :key="product.id">
             <div class="product-item-label orange" v-if="product.stock">Акція</div>
@@ -59,6 +64,12 @@
 <script>
 export default {
   name: "CategoryComponent",
+  props: {
+    isMainPage: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       categories: [],
@@ -112,7 +123,13 @@ export default {
             }
             document.title = `Акції Море Суші Сумы. Суші Сети та Роли. Море Суші у Сумах. Замовити з Доставкою до 22-00`;
           }).then(() => {
-            this.products = this.category.products
+            this.categories.reverse().map(category => {
+              this.products.push(...category.products)
+            })
+          }).then(() => {
+            if (this.isMainPage) {
+              this.products = this.products.slice(0, 8)
+            }
           })
     },
     setPageStateOptions(value) {
@@ -122,7 +139,9 @@ export default {
           document.title = `Заказать Суши ${this.category.title} Море Суші Сумы. Суші Сети та Роли. Море Суші у Сумах. Замовити з Доставкою до 22-00`,
           `${window.location.pathname}?filter=${value}`
       );
-      this.products = this.category.products
+      this.categories.map(category => {
+        this.products.push(...category.products)
+      })
     }
   },
 }

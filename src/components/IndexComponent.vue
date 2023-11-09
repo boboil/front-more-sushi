@@ -46,7 +46,7 @@
         </ul>
       </div>
     </section>
-    <StockComponent>
+    <StockComponent is-main-page>
       <div class="loadmore-block">
         <button class="loadmore" @click="this.$router.push('/stock')">
           <span>показати більше</span>
@@ -117,6 +117,9 @@ export default {
           }).then(() => {
             this.roly = this.categories.find(elem => elem.slug === 'roli').products.data
           })
+    },
+    showAlert() {
+      this.$swal('Вибачте, у нас сьогодні вихідний день. Завтра ми знову будемо раді вас бачити!');
     },
   },
   mounted() {
