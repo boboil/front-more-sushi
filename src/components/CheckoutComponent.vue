@@ -92,8 +92,12 @@
                     name="customer_phone"
                     id="customer_phone"
                     class="regular-input phone-mask"
+                    ref="customer_phone"
                     required
                 >
+                <div v-if="validationErrors && validationErrors['customer.phone']" class="error-message">
+                  {{ validationErrors['customer.phone'] }}
+                </div>
               </div>
             </div>
             <div class="checkout-group">
@@ -286,7 +290,8 @@ export default {
           day: '',
           time: ''
         }
-      }
+      },
+      validationErrors: {}
     }
   },
   mounted() {
@@ -324,23 +329,46 @@ export default {
     },
     addOrder() {
       this.axios.post(`${this.$API_URL}/api/shop/add-order`, {
-        customer: this.customer, products: this.products, sum: this.fullPrice
-      }).then(() => {
-        this.products = [];
-        this.$emit('clearCart')
-      }).then(() => {
-        this.$swal({
-              icon: 'success',
-              text: 'Дякую Ваше замовлення приянято',
-              confirmButtonText: "Ok",
-              closeOnConfirm: false
-            }).then((result) => {
-          if (result.isConfirmed) {
-            this.$router.push({path: '/'})
-          }
-        })
-
+        customer: this.customer,
+        products: this.products,
+        sum: this.fullPrice
       })
+          .then(() => {
+            this.products = [];
+            this.$emit('clearCart');
+            this.$swal({
+              icon: 'success',
+              text: 'Дякуємо! Ваше замовлення прийнято, З вами зв\'яжеться адміністратор для підтвердження вашого замовлення.',
+              confirmButtonText: "Ok",
+              closeOnConfirm: false,
+              customClass: {
+                popup: 'swal-mobile-popup',
+                confirmButton: 'swal-mobile-confirm'
+              }
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.$router.push({ path: '/' });
+              }
+            });
+          })
+          .catch((error) => {
+            if (error.response && error.response.status === 422) {
+              this.validationErrors = error.response.data.errors;
+              this.$refs.customer_phone.focus();
+            } else {
+              this.$swal({
+                icon: 'error',
+                title: 'Помилка',
+                text: 'Щось пішло не так, спробуйте пізніше.',
+                confirmButtonText: "Ok",
+                closeOnConfirm: true,
+                customClass: {
+                  popup: 'swal-mobile-popup',
+                  confirmButton: 'swal-mobile-confirm'
+                }
+              });
+            }
+          });
     },
     updateSticks(stickType, value) {
       if (this.customer.sticks[stickType] <= 0 && value < 0) {
@@ -363,3 +391,22 @@ export default {
   }
 }
 </script>
+<style>
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+@media (max-width: 600px) {
+  .swal-mobile-popup {
+    font-size: 1.2em;
+    padding: 20px;
+    width: 90vw;
+  }
+
+  .swal-mobile-confirm {
+    font-size: 1.1em;
+    padding: 12px 24px;
+  }
+}
+</style>
