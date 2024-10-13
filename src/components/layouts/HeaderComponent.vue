@@ -32,7 +32,11 @@
                 </router-link>
               </li>
               <li>
-                <a href="/">Акції</a>
+                <router-link
+                    to="/stock"
+                    active-class="active"
+                    @click="mobileMenuOpen = !mobileMenuOpen">Акції
+                </router-link>
               </li>
               <li>
                 <router-link

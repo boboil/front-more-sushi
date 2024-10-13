@@ -96,6 +96,12 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+@media (min-width: 1200px) {
+  .product {
+    &-order {
+      margin-left: 24px;
+    }
+  }
+}
 </style>

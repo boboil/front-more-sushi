@@ -53,17 +53,17 @@
             <div class="checkout-related-products">
               <div class="related-slider swiper-container js-related-swiper">
                 <div class="swiper-wrapper">
-                  <SliderComponent />
+                  <SliderComponent @addToCart="addToCart"/>
                 </div>
               </div>
             </div>
           </div>
           <div class="checkout-summary">
             <div class="checkout-delivery-annotation">
-              <span v-if="fullPrice < 650"> Безкоштовна доставка від 650 грн</span>
+              <span v-if="fullPrice < 300"> Безкоштовна доставка від 300 грн</span>
             </div>
             <div class="checkout-total">
-              <div v-if="fullPrice < 650">
+              <div v-if="fullPrice < 300">
                 Доставка: <span>50 грн</span>
               </div>
               До сплати: <span>{{ fullPrice }} грн</span>
@@ -88,12 +88,12 @@
                 <input
                     v-model="customer.phone"
                     type="text"
-                    placeholder="+38(___)-___-__-__"
+                    placeholder="Телефон"
                     name="customer_phone"
                     id="customer_phone"
                     class="regular-input phone-mask"
                     required
-                    maxlength="18">
+                >
               </div>
             </div>
             <div class="checkout-group">
@@ -133,11 +133,11 @@
                   >
                 </div>
                 <div class="input-wrapper">
-                  <label for="customer_building">Номер будинку</label>
+                  <label for="customer_building">Номер підʼїзду</label>
                   <input
                       v-model="customer.building"
                       type="text"
-                      placeholder="Будинок"
+                      placeholder="Підʼїзд"
                       name="customer_building"
                       id="customer_building"
                       required
@@ -298,6 +298,10 @@ export default {
     }
   },
   methods: {
+    addToCart(product) {
+      this.$emit('addToCart', product)
+      this.getCart()
+    },
     getCart() {
       if (localStorage.getItem('products')) {
         try {
@@ -319,14 +323,23 @@ export default {
       }
     },
     addOrder() {
-      // console.log(this.customer)
       this.axios.post(`${this.$API_URL}/api/shop/add-order`, {
         customer: this.customer, products: this.products, sum: this.fullPrice
       }).then(() => {
         this.products = [];
         this.$emit('clearCart')
       }).then(() => {
-        this.$router.push('/')
+        this.$swal({
+              icon: 'success',
+              text: 'Дякую Ваше замовлення приянято',
+              confirmButtonText: "Ok",
+              closeOnConfirm: false
+            }).then((result) => {
+          if (result.isConfirmed) {
+            this.$router.push({path: '/'})
+          }
+        })
+
       })
     },
     updateSticks(stickType, value) {
@@ -342,7 +355,7 @@ export default {
       this.products.forEach(({price, quantity}) => {
         sum += price * quantity
       })
-      if (sum < 650) {
+      if (sum < 300) {
         return sum + 50
       }
       return sum

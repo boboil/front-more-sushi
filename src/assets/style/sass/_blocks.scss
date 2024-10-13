@@ -165,10 +165,9 @@
         @include mobile {
             gap: 8px;
         }
-        a {
+        button {
             font-size: 13px;
             color: $grey;
-            // width: 140px;
             min-height: 42px;
             border: 1px solid currentColor;
             padding: 0 5px;
