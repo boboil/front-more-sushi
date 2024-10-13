@@ -46,116 +46,17 @@
         </ul>
       </div>
     </section>
+    <StockComponent is-main-page>
+      <div class="loadmore-block">
+        <button class="loadmore" @click="this.$router.push('/stock')">
+          <span>показати більше</span>
+          <span class="circle"></span>
+          <span class="circle"></span>
+          <span class="circle"></span>
+        </button>
+      </div>
+    </StockComponent>
 
-    <section class="block-category-products" v-if="roly.length">
-      <div class="container">
-        <!-- если на странице одной категории то н1 -->
-        <h2 class="block-title">
-          Роли
-        </h2>
-        <!-- в одной категории тут также блок с подкатегориями -->
-        <div class="category-products-list">
-          <div class="product-item" v-for="product in roly" :key="product.id">
-            <div class="product-item-label orange" v-if="product.stock">Акція</div>
-            <div class="product-item-label green" v-if="product.latest">Новинка</div>
-            <div class="product-item-photo" @click="this.$router.push('/product/' + product.slug)">
-              <img :src="product.main_image"
-                   :alt="product.title" loading="lazy">
-            </div>
-            <div class="product-item-info">
-              <div class="product-item-title">
-                {{ product.title }}
-              </div>
-              <div class="product-item-descr">
-                <p>
-                  Склад: <br>
-                  рис, водорості норі, сир «Філадельфія», лосось, манго, сир чеддер.&nbsp;
-                </p>
-              </div>
-              <div class="product-item-params">
-                <div class="product-item-weight">
-                  {{ product.weight }} г
-                </div>
-                <div class="product-item-price">
-                  <span class="old-price" v-if="product.discount">{{ product.discount }}</span>
-                  <span class="current-price">{{ product.price }}</span>
-                  <span class="currency">
-												грн
-											</span>
-                </div>
-              </div>
-              <button
-                  class="btn green small product-item-add"
-                  @click="addToCart(product)"
-              >
-                в кошик
-              </button>
-            </div>
-          </div>
-        </div>
-        <button class="loadmore" @click="this.$router.push('/catalog?filter=roli')">
-          <span>показати більше</span>
-          <span class="circle"></span>
-          <span class="circle"></span>
-          <span class="circle"></span>
-        </button>
-      </div>
-    </section>
-    <section class="block-category-products" v-if="sushi.length">
-      <div class="container">
-        <!-- если на странице одной категории то н1 -->
-        <h2 class="block-title">
-          Суші
-        </h2>
-        <!-- в одной категории тут также блок с подкатегориями -->
-        <div class="category-products-list">
-          <div class="product-item" v-for="product in sushi" :key="product.id"
-               @click="this.$router.push('/product/' + product.slug)">
-            <div class="product-item-label orange" v-if="product.stock">Акція</div>
-            <div class="product-item-label green" v-if="product.latest">Новинка</div>
-            <div class="product-item-photo">
-              <img :src="product.main_image"
-                   :alt="product.title" loading="lazy">
-            </div>
-            <div class="product-item-info">
-              <div class="product-item-title">
-                {{ product.title }}
-              </div>
-              <div class="product-item-descr" v-if="product.consist">
-                <p>
-                  Склад: <br>
-                  <span v-html="product.consist"/>
-                </p>
-              </div>
-              <div class="product-item-params">
-                <div class="product-item-weight">
-                  {{ product.weight }} г
-                </div>
-                <div class="product-item-price">
-                  <span class="old-price" v-if="product.discount">{{ product.discount }}</span>
-                  <span class="current-price">{{ product.price }} </span>
-                  <span class="currency">
-												грн
-											</span>
-                </div>
-              </div>
-              <button
-                  class="btn green small product-item-add"
-                  @click="addToCart(product)"
-              >
-                в кошик
-              </button>
-            </div>
-          </div>
-        </div>
-        <button class="loadmore" @click="this.$router.push('/catalog?filter=susi')">
-          <span>показати більше</span>
-          <span class="circle"></span>
-          <span class="circle"></span>
-          <span class="circle"></span>
-        </button>
-      </div>
-    </section>
 
     <section class="block-seo">
       <div class="container">
@@ -189,8 +90,12 @@
 </template>
 
 <script>
+import StockComponent from '@/components/StockComponent'
 export default {
   name: "IndexComponent",
+  components: {
+    StockComponent
+  },
   data() {
     return {
       categories: [],
@@ -211,8 +116,10 @@ export default {
             this.categories = response.data.data
           }).then(() => {
             this.roly = this.categories.find(elem => elem.slug === 'roli').products.data
-            this.sushi = this.categories.find(elem => elem.slug === 'susi').products.data
           })
+    },
+    showAlert() {
+      this.$swal('Вибачте, у нас сьогодні вихідний день. Завтра ми знову будемо раді вас бачити!');
     },
   },
   mounted() {
@@ -223,6 +130,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.loadmore-block {
+  display: flex;
+  justify-content: center;
+}
 .product-item {
   &:hover {
     cursor: pointer;

@@ -53,17 +53,17 @@
             <div class="checkout-related-products">
               <div class="related-slider swiper-container js-related-swiper">
                 <div class="swiper-wrapper">
-                  <SliderComponent />
+                  <SliderComponent @addToCart="addToCart"/>
                 </div>
               </div>
             </div>
           </div>
           <div class="checkout-summary">
             <div class="checkout-delivery-annotation">
-              <span v-if="fullPrice < 650"> Безкоштовна доставка від 650 грн</span>
+              <span v-if="fullPrice < 300"> Безкоштовна доставка від 300 грн</span>
             </div>
             <div class="checkout-total">
-              <div v-if="fullPrice < 650">
+              <div v-if="fullPrice < 300">
                 Доставка: <span>50 грн</span>
               </div>
               До сплати: <span>{{ fullPrice }} грн</span>
@@ -88,12 +88,16 @@
                 <input
                     v-model="customer.phone"
                     type="text"
-                    placeholder="+38(___)-___-__-__"
+                    placeholder="Телефон"
                     name="customer_phone"
                     id="customer_phone"
                     class="regular-input phone-mask"
+                    ref="customer_phone"
                     required
-                    maxlength="18">
+                >
+                <div v-if="validationErrors && validationErrors['customer.phone']" class="error-message">
+                  {{ validationErrors['customer.phone'] }}
+                </div>
               </div>
             </div>
             <div class="checkout-group">
@@ -133,11 +137,11 @@
                   >
                 </div>
                 <div class="input-wrapper">
-                  <label for="customer_building">Номер будинку</label>
+                  <label for="customer_building">Номер підʼїзду</label>
                   <input
                       v-model="customer.building"
                       type="text"
-                      placeholder="Будинок"
+                      placeholder="Підʼїзд"
                       name="customer_building"
                       id="customer_building"
                       required
@@ -286,7 +290,8 @@ export default {
           day: '',
           time: ''
         }
-      }
+      },
+      validationErrors: {}
     }
   },
   mounted() {
@@ -298,6 +303,10 @@ export default {
     }
   },
   methods: {
+    addToCart(product) {
+      this.$emit('addToCart', product)
+      this.getCart()
+    },
     getCart() {
       if (localStorage.getItem('products')) {
         try {
@@ -319,15 +328,47 @@ export default {
       }
     },
     addOrder() {
-      // console.log(this.customer)
       this.axios.post(`${this.$API_URL}/api/shop/add-order`, {
-        customer: this.customer, products: this.products, sum: this.fullPrice
-      }).then(() => {
-        this.products = [];
-        this.$emit('clearCart')
-      }).then(() => {
-        this.$router.push('/')
+        customer: this.customer,
+        products: this.products,
+        sum: this.fullPrice
       })
+          .then(() => {
+            this.products = [];
+            this.$emit('clearCart');
+            this.$swal({
+              icon: 'success',
+              text: 'Дякуємо! Ваше замовлення прийнято, З вами зв\'яжеться адміністратор для підтвердження вашого замовлення.',
+              confirmButtonText: "Ok",
+              closeOnConfirm: false,
+              customClass: {
+                popup: 'swal-mobile-popup',
+                confirmButton: 'swal-mobile-confirm'
+              }
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.$router.push({ path: '/' });
+              }
+            });
+          })
+          .catch((error) => {
+            if (error.response && error.response.status === 422) {
+              this.validationErrors = error.response.data.errors;
+              this.$refs.customer_phone.focus();
+            } else {
+              this.$swal({
+                icon: 'error',
+                title: 'Помилка',
+                text: 'Щось пішло не так, спробуйте пізніше.',
+                confirmButtonText: "Ok",
+                closeOnConfirm: true,
+                customClass: {
+                  popup: 'swal-mobile-popup',
+                  confirmButton: 'swal-mobile-confirm'
+                }
+              });
+            }
+          });
     },
     updateSticks(stickType, value) {
       if (this.customer.sticks[stickType] <= 0 && value < 0) {
@@ -342,7 +383,7 @@ export default {
       this.products.forEach(({price, quantity}) => {
         sum += price * quantity
       })
-      if (sum < 650) {
+      if (sum < 300) {
         return sum + 50
       }
       return sum
@@ -350,3 +391,22 @@ export default {
   }
 }
 </script>
+<style>
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+@media (max-width: 600px) {
+  .swal-mobile-popup {
+    font-size: 1.2em;
+    padding: 20px;
+    width: 90vw;
+  }
+
+  .swal-mobile-confirm {
+    font-size: 1.1em;
+    padding: 12px 24px;
+  }
+}
+</style>
