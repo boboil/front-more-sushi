@@ -1,5 +1,7 @@
 <template>
   <main class="content">
+    <HeroSliderComponent />
+
     <section class="block-homescreen">
       <div class="container">
         <div class="text">
@@ -91,10 +93,12 @@
 
 <script>
 import StockComponent from '@/components/StockComponent'
+import HeroSliderComponent from '@/components/HeroSliderComponent'
 export default {
   name: "IndexComponent",
   components: {
-    StockComponent
+    StockComponent,
+    HeroSliderComponent
   },
   data() {
     return {
