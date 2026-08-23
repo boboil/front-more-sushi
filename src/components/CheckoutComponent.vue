@@ -60,11 +60,11 @@
           </div>
           <div class="checkout-summary">
             <div class="checkout-delivery-annotation">
-              <span v-if="fullPrice < 300"> Безкоштовна доставка від 300 грн</span>
+              <span v-if="fullPrice < 500 && deliveryCost > 0"> Безкоштовна доставка від 500 грн</span>
             </div>
             <div class="checkout-total">
-              <div v-if="fullPrice < 300">
-                Доставка: <span>50 грн</span>
+              <div v-if="fullPrice < 500 && deliveryCost > 0">
+                Доставка: <span>60 грн</span>
               </div>
               До сплати: <span>{{ fullPrice }} грн</span>
             </div>
@@ -291,11 +291,13 @@ export default {
           time: ''
         }
       },
-      validationErrors: {}
+      validationErrors: {},
+      deliveryCost: 0
     }
   },
   mounted() {
     this.getCart()
+    this.getDeliveryCost()
   },
   watch: {
     products() {
@@ -303,6 +305,12 @@ export default {
     }
   },
   methods: {
+    getDeliveryCost() {
+      return this.axios.get(`${this.$API_URL}/api/shop/delivery-cost/`)
+          .then((response) => {
+            this.deliveryCost = response.data
+          })
+    },
     addToCart(product) {
       this.$emit('addToCart', product)
       this.getCart()
@@ -383,8 +391,8 @@ export default {
       this.products.forEach(({price, quantity}) => {
         sum += price * quantity
       })
-      if (sum < 300) {
-        return sum + 50
+      if (sum < 500 && this.deliveryCost > 0) {
+        return sum + this.deliveryCost
       }
       return sum
     }

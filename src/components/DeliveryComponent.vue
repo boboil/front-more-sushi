@@ -10,10 +10,15 @@
             Умови доставки:
           </h1>
           <p>
-            до <b>300 грн</b> вартість <b>50 грн</b>
-            <br>
-            <br>
-            <span>від 300 грн безкоштовно</span>
+            <template v-if="deliveryCost > 0">
+              до <b>500 грн</b> вартість <b>{{deliveryCost}} грн</b>
+              <br>
+              <br>
+              <span>від 500 грн безкоштовно</span>
+            </template>
+            <template v-else>
+              <span>Безкоштовно</span>
+            </template>
             <br>
             <br>
             <a href="https://maps.google.com/maps?daddr=50.915289473323675,34.814197684261224" rel="noindex nofollow noreferrer" target="_blank">Вул. Троїцька 17</a> з 11:00 до 21:00
@@ -41,7 +46,19 @@ export default {
   name: "DeliveryComponent",
   data() {
     return {
-      assetImage
+      assetImage,
+      deliveryCost: 0
+    }
+  },
+  mounted() {
+    this.getDeliveryCost()
+  },
+  methods: {
+    getDeliveryCost() {
+      return this.axios.get(`${this.$API_URL}/api/shop/delivery-cost/`)
+          .then((response) => {
+            this.deliveryCost = response.data
+          })
     }
   },
 }

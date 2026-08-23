@@ -1549,7 +1549,7 @@ main {
 @media screen and (max-width: 767px) {
   .block-category-products .category-tabs {
     gap: 8px; } }
-.block-category-products .category-tabs a {
+.block-category-products .category-tabs button {
   font-size: 13px;
   color: #9a9a9a;
   min-height: 42px;
@@ -1562,7 +1562,7 @@ main {
   text-align: center;
   align-items: center;
   justify-content: center; }
-.block-category-products .category-tabs a.active {
+.block-category-products .category-tabs button.active {
   color: #000;
   pointer-events: none; }
 .block-category-products .category-products-list {
