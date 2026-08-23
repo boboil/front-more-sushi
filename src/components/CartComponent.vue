@@ -49,9 +49,9 @@
       </table>
       <div class="cart-summary">
         <div
-            v-if="fullPrice < 300"
+            v-if="fullPrice < 500 && deliveryCost > 0"
             class="cart-delivery-annotation">
-          Безкоштовна доставка від 300 грн
+          Безкоштовна доставка від 500 грн
         </div>
         <div
             v-else
@@ -89,7 +89,8 @@ export default {
     return {
       openCart: false,
       products: [],
-      assetIcon
+      assetIcon,
+      deliveryCost: 0
     }
   },
   watch: {
@@ -104,8 +105,15 @@ export default {
   },
   mounted() {
     this.getCart()
+    this.getDeliveryCost()
   },
   methods: {
+    getDeliveryCost() {
+      return this.axios.get(`${this.$API_URL}/api/shop/delivery-cost/`)
+          .then((response) => {
+            this.deliveryCost = response.data
+          })
+    },
     deleteCart() {
       this.products = [];
       this.saveCart()
@@ -164,8 +172,8 @@ export default {
       this.products.forEach(({price, quantity}) => {
         sum += price * quantity
       })
-      if (sum < 300) {
-        return sum + 50
+      if (sum < 500 && this.deliveryCost > 0) {
+        return sum + 60
       }
       return sum
     },
