@@ -11,7 +11,6 @@
     "@nuxtjs/google-analytics": "^2.4.0",
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
-    "node-sass": "^8.0.0",
     "sass-loader": "^13.2.0",
     "swiper": "^8.3.2",
     "v-mask": "^2.2.4",
@@ -29,7 +28,8 @@
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3"
+    "eslint-plugin-vue": "^8.0.3",
+    "sass": "^1.103.1"
   },
   "eslintConfig": {
     "root": true,
