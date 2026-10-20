@@ -1,0 +1,68 @@
+// Токени з design_handoff_more_sushi_redesign/README.md
+
+$main-font: 'Montserrat', system-ui, sans-serif;
+$duration: 0.2s;
+
+// Бренд
+$orange: #f16311;
+$orange-dark: #c24e0b; // текст на тінті, hover/pressed
+$orange-badge: #ee5905;
+$orange-gradient: linear-gradient(90deg, #ff954e, #ee5905);
+$orange-gradient-hover: linear-gradient(90deg, #f6833a, #c24e0b);
+$orange-gradient-diag: linear-gradient(160deg, #ff954e, #ee5905);
+$orange-tint: #ffebdd;
+$orange-tint-border: #ffc39b;
+$orange-tint-text: #fff3ea;
+
+$green-dark: #196b1f;
+
+// Нейтральні
+$black: #111111;
+$text-secondary: #6b6b6b;
+$text-body-muted: #4a4a4a;
+$grey: #9a9a9a;
+$dark: #1f1f1f;
+$dark-hover: #000000;
+
+$page-bg: #f5f5f5;
+$body-bg: #ffffff;
+$input-bg: #f5f5f5;
+$input-border: #d6d6d6;
+$stepper-bg: #f0f0f0;
+$segment-bg: #ebebeb;
+$divider-card: #eeeeee;
+$divider-section: #e5e5e5;
+$radio-off: #bebebe;
+
+// Радіуси
+$radius-card: 18px;
+$radius-card-lg: 22px;
+$radius-img: 12px;
+$radius-img-lg: 14px;
+$radius-btn: 12px;
+$radius-btn-lg: 14px;
+$radius-pill: 999px;
+$radius-modal: 28px;
+
+// Тіні
+$shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
+$shadow-card-mobile: 0 2px 10px rgba(0, 0, 0, 0.06);
+$shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
+$shadow-header: 0 4px 18px rgba(0, 0, 0, 0.06);
+$shadow-bottom-bar: 0 -4px 16px rgba(0, 0, 0, 0.08);
+$shadow-cta: 0 8px 20px rgba(238, 89, 5, 0.35);
+$shadow-cta-header: 0 6px 16px rgba(238, 89, 5, 0.3);
+$shadow-modal: 0 30px 70px rgba(0, 0, 0, 0.3);
+
+// Відступи
+$container-padding-x-desktop: 48px;
+$container-padding-x-tablet: 24px;
+$container-padding-x-mobile: 16px;
+$container-max-width: 1440px;
+
+$header-height: 84px;
+$tabbar-height: 62px;
+
+// Брейкпоінти
+$mobile-max-width: 767px;
+$tablet-max-width: 1023px;

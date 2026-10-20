@@ -1,0 +1,372 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: $page-bg;
+  color: $black;
+  font-family: $main-font;
+  font-size: 14px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: $orange;
+  text-decoration: none;
+
+  &:hover {
+    color: $orange-dark;
+  }
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid $orange;
+  outline-offset: 2px;
+}
+
+.container {
+  width: 100%;
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $container-padding-x-desktop;
+
+  @include tablet {
+    padding: 0 $container-padding-x-tablet;
+  }
+
+  @include mobile {
+    padding: 0 $container-padding-x-mobile;
+  }
+}
+
+.only-mobile {
+  @include desktop-up {
+    display: none !important;
+  }
+}
+
+.only-desktop {
+  @include mobile {
+    display: none !important;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+// Кнопки
+.btn {
+  @include reset-button;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: $radius-btn;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background $duration, box-shadow $duration, color $duration;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  &--primary {
+    background: $orange-gradient;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: $orange-gradient-hover;
+      color: #fff;
+    }
+  }
+
+  &--dark {
+    background: $dark;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: $dark-hover;
+      color: #fff;
+    }
+  }
+
+  &--outline {
+    background: #fff;
+    border: 1px solid $input-border;
+    color: $black;
+
+    &:hover:not(:disabled) {
+      background: $stepper-bg;
+    }
+  }
+
+  &--link {
+    height: auto;
+    padding: 0;
+    color: $orange;
+    font-size: 13px;
+
+    &:hover {
+      color: $orange-dark;
+    }
+  }
+
+  // великий CTA з сумою праворуч
+  &--cta {
+    width: 100%;
+    height: 54px;
+    padding: 0 18px;
+    border-radius: $radius-btn-lg;
+    font-size: 16px;
+    justify-content: space-between;
+  }
+}
+
+.icon-btn {
+  @include reset-button;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-btn;
+  background: #fff;
+  color: $black;
+  transition: background $duration;
+
+  &:hover {
+    background: $stepper-bg;
+  }
+
+  &--grey {
+    background: $stepper-bg;
+
+    &:hover {
+      background: $input-border;
+    }
+  }
+}
+
+// Поля
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: $text-secondary;
+  min-width: 0;
+
+  &__error {
+    color: $orange-dark;
+    font-size: 12px;
+  }
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 12px;
+  border-radius: $radius-btn;
+  border: 1px solid $input-border;
+  background: $input-bg;
+  font-size: 15px;
+  color: $black;
+  outline: none;
+  transition: border-color $duration, background $duration;
+
+  @include desktop-up {
+    height: 48px;
+    padding: 0 14px;
+  }
+
+  &:focus {
+    border-color: $orange;
+    background: #fff;
+  }
+
+  &--invalid {
+    border-color: $orange-dark;
+  }
+
+  &::placeholder {
+    color: $grey;
+  }
+}
+
+textarea.input {
+  height: auto;
+  min-height: 76px;
+  padding: 10px 12px;
+  resize: vertical;
+  background: #fff;
+}
+
+.card {
+  background: #fff;
+  border-radius: $radius-card;
+  box-shadow: $shadow-card-mobile;
+
+  @include desktop-up {
+    border-radius: 20px;
+    box-shadow: $shadow-card;
+  }
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $grey;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  background: $orange-badge;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: $radius-pill;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.price {
+  white-space: nowrap;
+
+  &--old {
+    color: $grey;
+    text-decoration: line-through;
+    font-weight: 400;
+  }
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+
+  > :first-child {
+    color: $text-secondary;
+  }
+
+  &--success > :last-child {
+    color: $green-dark;
+  }
+
+  &--muted > :last-child {
+    color: $text-secondary;
+  }
+
+  &--total {
+    align-items: baseline;
+    padding-top: 10px;
+    border-top: 1px solid $divider-section;
+
+    > :first-child {
+      color: $black;
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    > :last-child {
+      font-weight: 800;
+      font-size: 24px;
+    }
+  }
+}
+
+// Заголовок екрана з кнопкою "Назад" (Кошик, Оформлення)
+.screen-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0 8px;
+
+  @include desktop-up {
+    gap: 14px;
+    padding: 0 0 20px;
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  &__title {
+    flex: 1;
+    min-width: 0;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.1;
+
+    @include desktop-up {
+      font-weight: 800;
+      font-size: 30px;
+    }
+  }
+}
+
+// Нижня липка панель з головною дією (мобільний); на десктопі — звичайний блок
+.sticky-cta {
+  @include mobile {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    padding: 12px $container-padding-x-mobile calc(18px + env(safe-area-inset-bottom));
+    background: #fff;
+    box-shadow: $shadow-bottom-bar;
+  }
+
+  @include desktop-up {
+    padding-top: 6px;
+  }
+}

@@ -1,14 +1,13 @@
-# develop stage
-FROM node:16.14-alpine as develop-stage
+FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
-# build stage
-FROM develop-stage as build-stage
 RUN npm run build
-# production stage
-FROM nginx:1.15.7-alpine as production-stage
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+
+FROM node:22-alpine AS production
+WORKDIR /app
+ENV NODE_ENV=production HOST=0.0.0.0 PORT=3000
+COPY --from=build /app/.output ./.output
+EXPOSE 3000
+CMD ["node", ".output/server/index.mjs"]

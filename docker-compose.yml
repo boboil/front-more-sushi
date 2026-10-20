@@ -1,11 +1,8 @@
-version: '3.7'
 services:
   frontend:
-    build:
-      context: .
-      target: 'develop-stage'
+    build: .
     ports:
-      - '8000:8000'
-    volumes:
-      - '.:/app'
-    command: /bin/sh -c "npm run serve"
+      - '3000:3000'
+    env_file:
+      - .env
+    restart: unless-stopped
