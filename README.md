@@ -56,6 +56,7 @@ app/
 На сервері (FastPanel, Debian 11):
 - код: `/var/www/moresushi_in_usr/data/www/moresushi.in.ua/new-front/.output` (старий фронт лишився поруч у `dist/`)
 - сервіс: `systemctl status moresushi-front` (Node 22 з `/opt/node22`, `127.0.0.1:3020`, env — у `/etc/systemd/system/moresushi-front.service`)
+- секрети (`NUXT_GA_API_SECRET`) — у `/etc/moresushi-front.env` (лише root, підключено через `EnvironmentFile`), не в репозиторії
 - nginx: `/etc/nginx/fastpanel2-available/moresushi_in_usr/moresushi.in.ua.conf` — проксі на `:3020`, статика з `.output/public`.
   ⚠️ FastPanel може перезаписати цей файл, якщо змінити налаштування сайту в панелі — тоді треба повторити правки.
   Старий конфіг (відкат на старий фронт): `/root/nginx-backup-moresushi.in.ua.conf.20261020_185653` → скопіювати на місце, `nginx -t && systemctl reload nginx`.
