@@ -10,7 +10,7 @@ if (!category(slug.value)) {
 useSeoMeta({
   title: () => rawCategory(slug.value)?.metaTitle || category(slug.value)?.name,
   description: () => rawCategory(slug.value)?.metaDescription
-    || `${category(slug.value)?.name} з доставкою у Сумах — Море Суші.`,
+    || `${category(slug.value)?.name} з доставкою у Сумах — Дари Моря.`,
 })
 </script>
 

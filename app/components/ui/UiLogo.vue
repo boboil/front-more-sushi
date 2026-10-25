@@ -1,8 +1,8 @@
 <template>
-  <NuxtLink to="/" class="logo" aria-label="Море Суші — на головну">
+  <NuxtLink to="/" class="logo" aria-label="Дари Моря — на головну">
     <img src="/img/logo-big.png" alt="" class="logo__img" width="54" height="54">
     <span class="logo__text">
-      <span class="logo__wordmark">МОРЕ <span>СУШІ</span></span>
+      <span class="logo__wordmark">ДАРИ <span>МОРЯ</span></span>
       <span class="logo__sub">Суми · доставка до {{ CONTACTS.deliveryUntil }}</span>
     </span>
   </NuxtLink>

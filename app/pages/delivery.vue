@@ -19,7 +19,7 @@ useSeoMeta({
 
     <div class="delivery__grid">
       <div class="delivery__media">
-        <img src="/img/delivery.webp" alt="Кур'єр Море Суші" width="635" height="635">
+        <img src="/img/delivery.webp" alt="Кур'єр «Дари Моря»" width="635" height="635">
       </div>
 
       <div class="delivery__cards">

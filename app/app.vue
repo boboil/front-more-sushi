@@ -9,7 +9,7 @@ const { public: { siteUrl, noindex } } = useRuntimeConfig()
 const route = useRoute()
 
 useSeoMeta({
-  ogSiteName: 'Море Суші',
+  ogSiteName: 'Дари Моря',
   ogType: 'website',
   ogLocale: 'uk_UA',
   ogImage: `${siteUrl}/img/logo-big.png`,
@@ -17,7 +17,7 @@ useSeoMeta({
 if (noindex) useSeoMeta({ robots: 'noindex, nofollow' })
 
 useHead(() => ({
-  titleTemplate: t => (t && t !== 'Море Суші' ? `${t} — Море Суші` : 'Море Суші — доставка суші у Сумах'),
+  titleTemplate: t => (t && t !== 'Дари Моря' ? `${t} — Дари Моря` : 'Дари Моря — доставка суші у Сумах'),
   link: [{ rel: 'canonical', href: `${siteUrl}${route.path}` }],
 }))
 </script>
