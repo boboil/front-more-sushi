@@ -52,7 +52,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'uk' },
-      title: 'Море Суші — доставка суші у Сумах',
+      title: 'Дари Моря — доставка суші у Сумах',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
         { name: 'theme-color', content: '#ffffff' },

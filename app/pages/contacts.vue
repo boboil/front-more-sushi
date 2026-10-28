@@ -3,7 +3,7 @@ const goBack = useGoBack('/')
 
 useSeoMeta({
   title: 'Контакти',
-  description: `Море Суші: ${CONTACTS.city}, ${CONTACTS.address}, ${CONTACTS.hours}. Телефон ${CONTACTS.phone.label}.`,
+  description: `Дари Моря: ${CONTACTS.city}, ${CONTACTS.address}, ${CONTACTS.hours}. Телефон ${CONTACTS.phone.label}.`,
 })
 
 useHead({
@@ -12,7 +12,7 @@ useHead({
     innerHTML: JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'Restaurant',
-      'name': 'Море Суші',
+      'name': 'Дари Моря',
       'servesCuisine': 'Japanese',
       'telephone': '+380990663511',
       'address': {
