@@ -12,6 +12,7 @@ const withTabs = computed(() => route.path === '/' || route.path.startsWith('/me
     </main>
     <MobileBottomBar v-if="withTabs" />
     <ProductModal />
+    <CookieNotice />
   </div>
 </template>
 
