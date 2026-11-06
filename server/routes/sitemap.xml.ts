@@ -17,6 +17,7 @@ export default defineEventHandler(async (event) => {
     ...menu.products.map(p => `/product/${p.slug}`),
     '/delivery',
     '/contacts',
+    '/privacy',
   ]
 
   const urls = [...new Set(paths)]

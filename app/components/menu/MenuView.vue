@@ -74,6 +74,7 @@ function resetAll() {
       <div class="menu-side__info">
         <NuxtLink to="/delivery" class="side-cat menu-side__info-link">Доставка і самовивіз</NuxtLink>
         <NuxtLink to="/contacts" class="side-cat menu-side__info-link">Контакти</NuxtLink>
+        <NuxtLink to="/privacy" class="side-cat menu-side__info-link">Політика конфіденційності</NuxtLink>
       </div>
     </aside>
 
