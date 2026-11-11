@@ -1,6 +1,6 @@
 import type { OrderRequest, OrderResponse } from '#shared/types/menu'
 
-type CheckoutForm = Omit<OrderRequest, 'lines' | 'promoCode'>
+type CheckoutForm = Omit<OrderRequest, 'lines' | 'promoCode' | 'attribution'>
 
 const REMEMBER_FIELDS = ['name', 'phone', 'address', 'entrance', 'mode'] as const
 type Remembered = Partial<Pick<CheckoutForm, typeof REMEMBER_FIELDS[number]>>
@@ -66,7 +66,7 @@ export function useCheckout() {
       const lines = cart.lines.value.map(l => ({ id: l.product.id, quantity: l.qty }))
       const res = await $fetch<OrderResponse>('/api/order', {
         method: 'POST',
-        body: { ...form.value, promoCode: cart.promo.value.code, lines } satisfies OrderRequest,
+        body: { ...form.value, promoCode: cart.promo.value.code, lines, attribution: getAttribution() } satisfies OrderRequest,
       })
       remembered.value = Object.fromEntries(REMEMBER_FIELDS.map(k => [k, form.value[k]])) as Remembered
       cart.lastOrder.value = lines

@@ -63,6 +63,19 @@ export interface OrderLine {
   quantity: number
 }
 
+/** Звідки прийшов відвідувач (UTM, click-id, реферер); бекенд сам відкидає зайве */
+export interface OrderAttribution {
+  source?: string
+  medium?: string
+  campaign?: string
+  content?: string
+  term?: string
+  click_id_type?: string
+  referrer?: string
+  landing_page?: string
+  touched_at?: string
+}
+
 export interface OrderRequest {
   mode: 'delivery' | 'pickup'
   name: string
@@ -80,6 +93,7 @@ export interface OrderRequest {
   promoCode?: string
   useBonus?: boolean
   lines: OrderLine[]
+  attribution?: OrderAttribution
 }
 
 export interface OrderResponse {

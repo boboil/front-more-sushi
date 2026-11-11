@@ -74,6 +74,8 @@ export default defineEventHandler(async (event): Promise<OrderResponse> => {
           quantity: l.quantity,
         })),
         sum: total,
+        // джерело візиту; бекенд пропускає лише відомі ключі (OrderAttribution::sanitize)
+        ...(body.attribution && typeof body.attribution === 'object' ? { attribution: body.attribution } : {}),
       },
     })
     const id = res?.data?.id ?? null
