@@ -19,6 +19,8 @@ if (noindex) useSeoMeta({ robots: 'noindex, nofollow' })
 useHead(() => ({
   titleTemplate: t => (t && t !== 'Дари Моря' ? `${t} — Дари Моря` : 'Дари Моря — доставка суші у Сумах'),
   link: [{ rel: 'canonical', href: `${siteUrl}${route.path}` }],
+  // ресторан і сайт — на кожній сторінці; меню, товари й крихти додають самі сторінки
+  script: [jsonLd(websiteSchema(siteUrl), restaurantSchema(siteUrl))],
 }))
 </script>
 

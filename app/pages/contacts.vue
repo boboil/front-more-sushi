@@ -6,25 +6,9 @@ useSeoMeta({
   description: `Дари Моря: ${CONTACTS.city}, ${CONTACTS.address}, ${CONTACTS.hours}. Телефон ${CONTACTS.phone.label}.`,
 })
 
-useHead({
-  script: [{
-    type: 'application/ld+json',
-    innerHTML: JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'Restaurant',
-      'name': 'Дари Моря',
-      'servesCuisine': 'Japanese',
-      'telephone': '+380990663511',
-      'address': {
-        '@type': 'PostalAddress',
-        'streetAddress': 'вул. Троїцька, 17',
-        'addressLocality': 'Суми',
-        'addressCountry': 'UA',
-      },
-      'openingHours': 'Mo-Su 11:00-20:30',
-    }),
-  }],
-})
+const { public: { siteUrl } } = useRuntimeConfig()
+// сам ресторан описаний в app.vue (на всіх сторінках)
+useHead({ script: [jsonLd(breadcrumbSchema(siteUrl, [{ name: 'Дари Моря', path: '/' }, { name: 'Контакти', path: '/contacts' }]))] })
 
 const fields = reactive({ name: '', email: '', question: '' })
 const errors = ref<Record<string, string>>({})
