@@ -87,6 +87,7 @@ async function submit() {
 
         <NuxtLink to="/delivery" class="contacts__link">Умови доставки →</NuxtLink>
         <NuxtLink to="/privacy" class="contacts__link">Політика конфіденційності →</NuxtLink>
+        <NuxtLink to="/terms" class="contacts__link">Умови використання →</NuxtLink>
       </div>
 
       <section class="card contacts__form-card">

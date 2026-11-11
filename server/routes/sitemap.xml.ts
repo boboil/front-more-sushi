@@ -18,6 +18,7 @@ export default defineEventHandler(async (event) => {
     '/delivery',
     '/contacts',
     '/privacy',
+    '/terms',
   ]
 
   const urls = [...new Set(paths)]

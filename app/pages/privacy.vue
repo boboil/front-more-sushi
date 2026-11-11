@@ -15,7 +15,7 @@ useSeoMeta({
     </div>
 
     <article class="card privacy__body">
-      <p class="privacy__updated">Оновлено 6 листопада 2026 року</p>
+      <p class="privacy__updated">Оновлено 11 листопада 2026 року</p>
       <p>
         Ця політика пояснює, які дані збирає ресторан «Дари Моря» ({{ CONTACTS.city }}, {{ CONTACTS.address }})
         на сайті moresushi.in.ua і як ми їх використовуємо.
@@ -75,6 +75,13 @@ useSeoMeta({
         і <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Політика конфіденційності Google</a>.
         Доступ можна відкликати на сторінці
         <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">дозволів облікового запису Google</a>.
+      </p>
+
+      <h2>Дані TikTok</h2>
+      <p>
+        Так само адміністрація публікує відео на власному акаунті ресторану в TikTok через TikTok API.
+        Ми отримуємо лише базові дані акаунта (ім'я та ідентифікатор) і право публікувати відео, а токен доступу зберігаємо в зашифрованому вигляді.
+        Ці дані не передаються третім особам. Доступ можна відкликати в налаштуваннях TikTok у розділі керування застосунками.
       </p>
 
       <h2>Зміни</h2>
