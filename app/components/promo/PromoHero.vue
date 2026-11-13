@@ -1,28 +1,8 @@
 <script setup lang="ts">
 import type { PromoDay } from '#shared/types/promo'
 
-// Перший екран лендингу: діагональ двох відтінків дня, велика цифра, фото-медальйон.
-// Виглядає однаково завжди; від стану залежить лише рядок під оффером (таймер / коли почнеться / коли діє).
-const props = defineProps<{
-  day: PromoDay
-  image: string
-  secondsLeft: number
-  state?: 'active' | 'soon' | 'ended' | 'wrong-day'
-}>()
-
-const ribbon = computed(() => props.state === 'wrong-day'
-  ? `Акція ${PROMO_EVERY[props.day.key]}`
-  : `${props.day.label} · сьогодні акція`)
-
-const status = computed(() => {
-  const d = props.day
-  switch (props.state) {
-    case 'soon': return `Почнеться сьогодні о ${d.activeFrom}`
-    case 'ended': return 'Сьогодні вже завершилась'
-    case 'wrong-day': return `Діє ${PROMO_EVERY[d.key]} з ${d.activeFrom} до ${d.activeTo}`
-    default: return null
-  }
-})
+// Перший екран «акція йде»: діагональ двох відтінків дня, велика цифра, фото-медальйон, таймер
+const props = defineProps<{ day: PromoDay, image: string, secondsLeft: number }>()
 
 const big = computed(() => props.day.offerType === 'percent' && props.day.discountPercent
   ? `−${props.day.discountPercent}%`
@@ -31,7 +11,7 @@ const big = computed(() => props.day.offerType === 'percent' && props.day.discou
 
 <template>
   <section class="hero">
-    <PromoRibbon :text="ribbon" />
+    <PromoRibbon :text="`${day.label} · сьогодні акція`" />
     <div class="hero__inner">
       <div class="hero__text">
         <span class="hero__big" :class="{ 'hero__big--word': day.offerType !== 'percent' }">{{ big }}</span>
@@ -41,8 +21,7 @@ const big = computed(() => props.day.offerType === 'percent' && props.day.discou
         </div>
         <div class="hero__timer">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7" /><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" /></svg>
-          <span v-if="status">{{ status }}</span>
-          <ClientOnly v-else>
+          <ClientOnly>
             <span>До кінця акції: {{ formatCountdown(secondsLeft) }}</span>
             <template #fallback><span>Діє до {{ day.activeTo }}</span></template>
           </ClientOnly>
