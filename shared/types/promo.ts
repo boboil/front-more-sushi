@@ -28,5 +28,7 @@ export interface PromoDay {
 export interface PromoData {
   /** перемикач в адмінці; вимкнено — сторінки 404, знижки не діють */
   enabled: boolean
+  /** відкрито з адмінки за ключем перегляду (?preview=…) */
+  preview?: boolean
   days: PromoDay[]
 }

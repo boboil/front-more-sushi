@@ -3,6 +3,7 @@ import type { PromoDay } from '#shared/types/promo'
 
 // Стрічка 7 днів; поточний (сьогоднішній) день — заливка кольором дня
 defineProps<{ days: PromoDay[], todayWeekday: number }>()
+const promoLink = usePromoLink()
 </script>
 
 <template>
@@ -10,7 +11,7 @@ defineProps<{ days: PromoDay[], todayWeekday: number }>()
     <NuxtLink
       v-for="d in days"
       :key="d.key"
-      :to="`/promo/${d.slug}`"
+      :to="promoLink(d.slug)"
       class="week__chip"
       :class="{ 'week__chip--today': d.weekday === todayWeekday }"
       :style="{

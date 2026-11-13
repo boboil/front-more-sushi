@@ -6,13 +6,10 @@ const cart = useCart()
 <template>
   <div class="promo-layout">
     <header class="promo-header">
-      <NuxtLink to="/" class="promo-header__logo" aria-label="Дари Моря — на головну">
-        <img src="/img/logo-big.png" alt="" width="40" height="40">
-        <span class="only-desktop">ДАРИ МОРЯ</span>
-      </NuxtLink>
-      <a :href="CONTACTS.phone.href" class="promo-header__phone">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.2 1L6.6 10.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /></svg>
-        <span>{{ CONTACTS.phone.label }}</span>
+      <UiLogo />
+      <a :href="CONTACTS.phone.href" class="promo-header__phone" :aria-label="`Подзвонити ${CONTACTS.phone.label}`">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.2 1L6.6 10.8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /></svg>
+        <span class="only-desktop">{{ CONTACTS.phone.label }}</span>
       </a>
       <NuxtLink to="/cart" class="promo-header__cart" :aria-label="`Кошик: ${cart.count.value}`">
         <UiIcon name="bag" :size="22" :stroke="1.7" />
@@ -48,35 +45,21 @@ const cart = useCart()
     padding: 16px $container-padding-x-desktop;
   }
 
-  &__logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 800;
-    font-size: 18px;
-    color: $black;
-
-    img {
-      width: 36px;
-      height: 36px;
-      object-fit: contain;
-
-      @include desktop-up {
-        width: 42px;
-        height: 42px;
-      }
-    }
-  }
-
   &__phone {
     display: flex;
     align-items: center;
     gap: 6px;
+    margin-left: auto;
+    margin-right: 8px;
+    padding: 6px;
+    white-space: nowrap;
     font-weight: 700;
     font-size: 14px;
     color: $black;
 
     @include desktop-up {
+      margin: 0;
+      padding: 0;
       font-size: 15px;
     }
   }

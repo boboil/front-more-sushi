@@ -7,9 +7,12 @@ definePageMeta({ layout: 'promo' })
 
 const route = useRoute()
 const { data: promo } = await usePromo()
+const promoLink = usePromoLink()
 const dayKey = PROMO_SLUG_TO_DAY[String(route.params.day)]
 const day = computed(() => promo.value?.days.find(d => d.key === dayKey))
-if (!promo.value?.enabled || !day.value) {
+// перегляд з адмінки (кнопка «Переглянути»): працює й з вимкненими лендингами, у будь-який день і годину
+const preview = computed(() => !!promo.value?.preview)
+if (!(promo.value?.enabled || preview.value) || !day.value) {
   throw createError({ statusCode: 404, statusMessage: 'Сторінку не знайдено', fatal: true })
 }
 
@@ -17,7 +20,7 @@ const { productById, deliveryCost } = useMenu()
 const now = useKyivClock()
 const colors = computed(() => PROMO_COLORS[day.value!.key])
 
-const products = computed<MenuProduct[]>(() =>
+const menuProducts = computed<MenuProduct[]>(() =>
   (day.value?.productIds ?? []).map(id => productById(id)).filter((p): p is MenuProduct => !!p))
 const image = computed(() => day.value?.heroImage || products.value[0]?.image || '/img/logo-big.png')
 
@@ -26,14 +29,35 @@ const today = computed(() => days.value.find(d => d.weekday === now.value.weekda
 const tomorrow = computed(() => days.value.find(d => d.weekday === (now.value.weekday % 7) + 1))
 
 type PageState = 'active' | 'soon' | 'ended' | 'wrong-day'
+const PREVIEW_STATES: { state: PageState, label: string }[] = [
+  { state: 'active', label: 'Акція діє' },
+  { state: 'soon', label: 'Ще не почалась' },
+  { state: 'ended', label: 'Завершилась' },
+  { state: 'wrong-day', label: 'Інший день' },
+]
+const previewState = computed<PageState>(() =>
+  PREVIEW_STATES.find(s => s.state === route.query.as)?.state ?? 'active')
+
 const state = computed<PageState>(() => {
   const d = day.value!
+  if (preview.value) return previewState.value
   if (!d.isActive || d.weekday !== now.value.weekday) return 'wrong-day'
   if (now.value.time < d.activeFrom) return 'soon'
   if (now.value.time >= d.activeTo) return 'ended'
   return 'active'
 })
-const secondsLeft = computed(() => toSeconds(day.value!.activeTo) - now.value.seconds)
+const secondsLeft = computed(() => {
+  const d = day.value!
+  // у перегляді поза годинами акції таймер показує всю тривалість
+  if (preview.value && !(d.weekday === now.value.weekday && isWithinHours(d, now.value))) return toSeconds(d.activeTo) - toSeconds(d.activeFrom)
+  return toSeconds(d.activeTo) - now.value.seconds
+})
+
+// у перегляді знижка поза годинами акції лише показана на картках; у кошику — ціни з меню (звичайні)
+const products = computed<MenuProduct[]>(() => menuProducts.value.map(p =>
+  preview.value && state.value === 'active' && !p.isPromo && day.value!.offerType === 'percent'
+    ? { ...p, oldPrice: p.price, price: promoPrice(p.price, day.value!) }
+    : p))
 
 // акція почалась/закінчилась, поки сторінка відкрита — підтягуємо меню з новими цінами (кошик рахує з нього)
 watch(state, () => refreshNuxtData(MENU_KEY))
@@ -58,6 +82,24 @@ useSeoMeta({
 
 <template>
   <div v-if="day" class="promo" :class="`promo--${state}`">
+    <!-- Панель перегляду з адмінки; відвідувачі її не бачать -->
+    <div v-if="preview" class="preview">
+      <span class="preview__title">Перегляд{{ promo?.enabled ? '' : ' · лендинги вимкнені, сторінку бачите лише ви' }}</span>
+      <nav class="preview__states" aria-label="Стан сторінки">
+        <NuxtLink
+          v-for="s in PREVIEW_STATES"
+          :key="s.state"
+          :to="{ query: { ...route.query, as: s.state === 'active' ? undefined : s.state } }"
+          class="preview__state"
+          :class="{ 'preview__state--on': s.state === state }"
+          replace
+        >
+          {{ s.label }}
+        </NuxtLink>
+      </nav>
+      <span v-if="state === 'active' && !day.isActive" class="preview__note">Цей день вимкнений в адмінці — відвідувачі побачать «Інший день».</span>
+      <span class="preview__note">Знижка тут лише для показу: у кошику ціни звичайні, поки акція не діє насправді.</span>
+    </div>
     <!-- 1. Перший екран -->
     <PromoHero v-if="state === 'active'" :day="day" :image="image" :seconds-left="secondsLeft" />
 
@@ -86,7 +128,7 @@ useSeoMeta({
         :note="`Старт о ${tomorrow.activeFrom}`"
         class="ended__poster"
       >
-        <NuxtLink :to="`/promo/${tomorrow.slug}`" class="ended__link">Подивитись акцію</NuxtLink>
+        <NuxtLink :to="promoLink(tomorrow.slug)" class="ended__link">Подивитись акцію</NuxtLink>
       </PromoPoster>
       <NuxtLink to="/menu" class="ended__menu">А поки — повне меню →</NuxtLink>
     </section>
@@ -110,7 +152,7 @@ useSeoMeta({
       <div class="today" :style="{ background: PROMO_COLORS[today.key].base }">
         <span class="today__pill" :style="{ color: PROMO_COLORS[today.key].base }">А сьогодні — {{ today.label.toLowerCase() }}</span>
         <span class="today__offer">{{ today.offerType === 'percent' && today.discountPercent ? `−${today.discountPercent}% ` : '' }}{{ today.offerTitle }}</span>
-        <NuxtLink :to="`/promo/${today.slug}`" class="today__cta" :style="{ color: PROMO_COLORS[today.key].base }">Перейти до акції дня</NuxtLink>
+        <NuxtLink :to="promoLink(today.slug)" class="today__cta" :style="{ color: PROMO_COLORS[today.key].base }">Перейти до акції дня</NuxtLink>
       </div>
     </section>
 
@@ -175,6 +217,56 @@ useSeoMeta({
 </template>
 
 <style scoped lang="scss">
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px $container-padding-x-mobile;
+  background: #1c1c1c;
+  color: #fff;
+  font-size: 13px;
+
+  @include desktop-up {
+    padding: 10px $container-padding-x-desktop;
+  }
+
+  &__title {
+    font-weight: 800;
+  }
+
+  &__states {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__state {
+    padding: 5px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: $radius-pill;
+    color: #fff;
+    font-weight: 600;
+
+    &:hover {
+      color: #fff;
+    }
+
+    &--on {
+      background: #fff;
+      color: #1c1c1c;
+      border-color: #fff;
+
+      &:hover {
+        color: #1c1c1c;
+      }
+    }
+  }
+
+  &__note {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
 .promo {
   --block-x: #{$container-padding-x-mobile};
 

@@ -1,8 +1,25 @@
 import type { PromoData } from '#shared/types/promo'
 
-/** Акції дня (/api/promo). Вимкнені в адмінці — enabled: false */
+/** Акції дня (/api/promo). Вимкнені в адмінці — enabled: false; з ключем перегляду — дні навіть вимкненими */
 export function usePromo() {
-  return useFetch<PromoData>('/api/promo', { key: 'promo', dedupe: 'defer' })
+  const preview = usePromoPreviewKey()
+  return useFetch<PromoData>('/api/promo', {
+    key: preview ? 'promo-preview' : 'promo',
+    query: preview ? { preview } : undefined,
+    dedupe: 'defer',
+  })
+}
+
+/** Ключ перегляду з адмінки (?preview=…), інакше null */
+export function usePromoPreviewKey(): string | null {
+  const value = useRoute().query.preview
+  return typeof value === 'string' && value ? value : null
+}
+
+/** Посилання на інший день; у режимі перегляду зберігає ключ */
+export function usePromoLink() {
+  const preview = usePromoPreviewKey()
+  return (slug: string) => preview ? { path: `/promo/${slug}`, query: { preview } } : `/promo/${slug}`
 }
 
 /** Київський час, що оновлюється щосекунди на клієнті (таймер, зміна стану акції) */
