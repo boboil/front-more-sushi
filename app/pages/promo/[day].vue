@@ -98,28 +98,23 @@ useSeoMeta({
         </NuxtLink>
       </nav>
       <span v-if="state === 'active' && !day.isActive" class="preview__note">Цей день вимкнений в адмінці — відвідувачі побачать «Інший день».</span>
-      <span class="preview__note">Знижка тут лише для показу: у кошику ціни звичайні, поки акція не діє насправді.</span>
+      <span v-if="state === 'active'" class="preview__note">Знижка тут лише для показу: у кошику ціни звичайні, поки акція не діє насправді.</span>
     </div>
-    <!-- 1. Перший екран -->
-    <PromoHero v-if="state === 'active'" :day="day" :image="image" :seconds-left="secondsLeft" />
+    <!-- 1. Перший екран: завжди як під час акції (з картинкою дня), стан — рядком у ньому -->
+    <PromoHero v-if="day.isActive" :day="day" :image="image" :seconds-left="secondsLeft" :state="state" />
 
-    <section v-else-if="state === 'soon'" class="banner">
-      <span class="banner__title">Акція почнеться о {{ day.activeFrom }}</span>
-      <span class="banner__text">{{ day.label }}: {{ day.offerShort }}. Зараз ціни звичайні — можна вже обрати товари.</span>
+    <!-- пояснення під першим екраном, коли знижка зараз не діє -->
+    <section v-if="state === 'soon'" class="banner">
+      <span class="banner__text">Зараз ціни звичайні — можна вже обрати товари, знижка з {{ day.activeFrom }}.</span>
     </section>
 
     <section v-else-if="state === 'wrong-day'" class="banner">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6" /><path d="M3 9h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
-      <span class="banner__title">{{ day.isActive ? `Ця акція діє ${PROMO_EVERY[day.key]}` : `${day.label}: зараз без акції` }}</span>
-      <span class="banner__text">Ви перейшли за посиланням на акцію дня «{{ day.label }}». Сьогодні {{ today?.label.toLowerCase() }} — нижче показані звичайні ціни.</span>
+      <span v-if="!day.isActive" class="banner__title">{{ day.label }}: зараз без акції</span>
+      <span class="banner__text">Сьогодні {{ today?.label.toLowerCase() }} — нижче показані звичайні ціни.</span>
     </section>
 
-    <section v-else class="ended">
-      <div class="ended__icon">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6" /><path d="M12 8v5l-3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
-      </div>
-      <span class="banner__title">Акція вже завершилась</span>
-      <span class="banner__text">{{ day.label }}: «{{ day.offerTitle }}» діяла до {{ day.activeTo }}.{{ tomorrow?.isActive ? ' Але завтра — нова акція.' : '' }}</span>
+    <section v-else-if="state === 'ended'" class="ended">
+      <span v-if="tomorrow?.isActive" class="banner__text">Завтра — нова акція:</span>
       <PromoPoster
         v-if="tomorrow?.isActive"
         :day="tomorrow"
@@ -310,17 +305,6 @@ useSeoMeta({
 .ended {
   background: transparent;
   padding-top: 40px;
-
-  &__icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: #ececec;
-    color: $grey;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 
   &__poster {
     width: 100%;
