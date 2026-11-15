@@ -40,6 +40,8 @@ export default defineNuxtConfig({
       gtmId: 'GTM-T76VSG8S',
       gaId: 'G-39S6Y7MJQ3',
       tiktokPixelId: 'DA5D9CJC77UES973TFTG',
+      // піксель реклами в ChatGPT (ads.openai.com → Конверсії → Джерело даних)
+      openaiPixelId: 'FAGQK2LKyPFfTEniz1CcU6',
     },
   },
 

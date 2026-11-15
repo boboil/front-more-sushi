@@ -1,7 +1,7 @@
 /* eslint-disable */
 import type { TrackLine } from '#shared/utils/analytics'
 
-// Пікселі зі старого фронту: Facebook, TikTok, Google Tag Manager, Google Analytics 4
+// Пікселі зі старого фронту: Facebook, TikTok, Google Tag Manager, Google Analytics 4; плюс піксель реклами в ChatGPT
 // Подію називаємо як у GA4, а Facebook і TikTok отримують свої стандартні відповідники (де вони є)
 const PIXEL_EVENTS = {
   view_item_list: null,
@@ -16,6 +16,14 @@ const PIXEL_EVENTS = {
   phone_click: 'Contact',
   filter_use: null,
 } as const
+
+// стандартні події пікселя ChatGPT Ads; конверсія в кабінеті прив'язана до order_created
+const OPENAI_EVENTS: Partial<Record<keyof typeof PIXEL_EVENTS, string>> = {
+  view_item: 'contents_viewed',
+  add_to_cart: 'items_added',
+  begin_checkout: 'checkout_started',
+  purchase: 'order_created',
+}
 
 export type TrackEvent = keyof typeof PIXEL_EVENTS
 
@@ -33,7 +41,7 @@ export interface TrackData {
 const MAX_LIST_ITEMS = 30
 
 export default defineNuxtPlugin(() => {
-  const { public: { fbPixelId, tiktokPixelId, gtmId, gaId } } = useRuntimeConfig()
+  const { public: { fbPixelId, tiktokPixelId, gtmId, gaId, openaiPixelId } } = useRuntimeConfig()
   const w = window as any
 
   if (fbPixelId) {
@@ -59,6 +67,17 @@ export default defineNuxtPlugin(() => {
       }
       ttq.load(tiktokPixelId)
     })(w, document, 'ttq')
+  }
+
+  if (openaiPixelId) {
+    ;(function (w: any, d: Document, s: string, u: string) {
+      if (w.oaiq) return
+      const q: any = function () { q.q.push(arguments) }
+      q.q = []; w.oaiq = q
+      const js = d.createElement(s) as HTMLScriptElement; js.async = true; js.src = u
+      const f = d.getElementsByTagName(s)[0]!; f.parentNode!.insertBefore(js, f)
+    })(w, document, 'script', 'https://bzrcdn.openai.com/sdk/oaiq.min.js')
+    w.oaiq('init', { pixelId: openaiPixelId })
   }
 
   if (gtmId) {
@@ -102,6 +121,25 @@ export default defineNuxtPlugin(() => {
       })
     }
 
+    const oai = OPENAI_EVENTS[event]
+    if (oai && openaiPixelId) {
+      // суми — цілі числа в копійках
+      const minor = (n: number) => Math.round(n * 100)
+      const orderId = event === 'purchase' ? data.params?.transaction_id : undefined
+      w.oaiq?.('measure', oai, {
+        type: 'contents',
+        ...(ecommerce ? { amount: minor(value), currency: 'UAH' } : {}),
+        contents: lines.map(l => ({
+          id: String(l.product.id),
+          name: l.product.name,
+          content_type: 'product',
+          quantity: l.qty,
+          amount: minor(l.product.price),
+          currency: 'UAH',
+        })),
+      }, ...(orderId ? [{ event_id: `order_${orderId}` }] : []))
+    }
+
     const pixel = PIXEL_EVENTS[event]
     if (!pixel) return
     const ids = lines.map(l => String(l.product.id))
@@ -117,7 +155,7 @@ export default defineNuxtPlugin(() => {
   }
 
   const router = useRouter()
-  const pageView = () => { w.fbq?.('track', 'PageView'); w.ttq?.page?.() }
+  const pageView = () => { w.fbq?.('track', 'PageView'); w.ttq?.page?.(); w.oaiq?.('measure', 'page_viewed', { type: 'contents' }) }
   pageView()
   router.afterEach((to, from) => { if (to.path !== from.path) pageView() })
 
