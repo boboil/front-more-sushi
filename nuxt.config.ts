@@ -23,6 +23,9 @@ export default defineNuxtConfig({
     // NUXT_GA_API_SECRET — секрет Measurement Protocol (GA → Адміністратор → Потоки даних → веб-потік);
     // з ним замовлення йдуть у GA4 із сервера. Без нього — лише з браузера
     gaApiSecret: '',
+    // NUXT_OPENAI_CAPI_KEY — ключ Conversions API (ads.openai.com → Конверсії → API-ключі конверсій);
+    // з ним замовлення йдуть у рекламу ChatGPT ще й із сервера. Без нього — лише піксель у браузері
+    openaiCapiKey: '',
     public: {
       // NUXT_PUBLIC_API_URL
       apiUrl: 'https://bot.moresushi.in.ua',

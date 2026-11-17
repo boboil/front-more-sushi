@@ -35,6 +35,16 @@ export interface TrackData {
   params?: Record<string, unknown>
   /** purchase уже відправив у GA сервер (Measurement Protocol) — у GA з браузера не дублюємо */
   skipGa?: boolean
+  /** телефон клієнта — у піксель ChatGPT іде лише SHA-256 хеш (для зіставлення конверсій) */
+  phone?: string
+}
+
+/** номер у вигляді цифр із кодом країни (380XXXXXXXXX) → SHA-256 hex, як вимагає піксель ChatGPT */
+async function phoneSha256(phone: string): Promise<string | undefined> {
+  const digits = phone.replace(/\D/g, '').replace(/^0+/, '')
+  if (digits.length < 8 || digits.length > 15 || !crypto?.subtle) return undefined
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(digits))
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
 // у списку категорії (особливо "Усе меню") товарів більше сотні — GA вистачить перших
@@ -79,6 +89,19 @@ export default defineNuxtPlugin(() => {
     })(w, document, 'script', 'https://bzrcdn.openai.com/sdk/oaiq.min.js')
     w.oaiq('init', { pixelId: openaiPixelId })
   }
+
+  // дані клієнта для зіставлення конверсій у ChatGPT: повторний init із повним user-об'єктом (лише хеші)
+  let oaiUser = Promise.resolve()
+  const identify = (phone?: string) => {
+    if (!openaiPixelId || !phone) return oaiUser
+    oaiUser = oaiUser
+      .then(() => phoneSha256(phone))
+      .then((hash) => { if (hash) w.oaiq?.('init', { pixelId: openaiPixelId, user: { phone_number_sha256: hash, country: 'UA' } }) })
+      .catch(() => {})
+    return oaiUser
+  }
+  // клієнт, що вже замовляв: телефон збережений у cookie з оформлення
+  identify(useCookie<{ phone?: string }>('ms_customer').value?.phone)
 
   if (gtmId) {
     w.dataLayer = w.dataLayer || []
@@ -126,7 +149,7 @@ export default defineNuxtPlugin(() => {
       // суми — цілі числа в копійках
       const minor = (n: number) => Math.round(n * 100)
       const orderId = event === 'purchase' ? data.params?.transaction_id : undefined
-      w.oaiq?.('measure', oai, {
+      const payload = {
         type: 'contents',
         ...(ecommerce ? { amount: minor(value), currency: 'UAH' } : {}),
         contents: lines.map(l => ({
@@ -137,7 +160,10 @@ export default defineNuxtPlugin(() => {
           amount: minor(l.product.price),
           currency: 'UAH',
         })),
-      }, ...(orderId ? [{ event_id: `order_${orderId}` }] : []))
+      }
+      const options = orderId ? [{ event_id: `order_${orderId}` }] : []
+      // подію шлемо після init з даними клієнта (хешування асинхронне)
+      ;(data.phone ? identify(data.phone) : oaiUser).then(() => w.oaiq?.('measure', oai, payload, ...options))
     }
 
     const pixel = PIXEL_EVENTS[event]

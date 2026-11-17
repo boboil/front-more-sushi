@@ -86,6 +86,14 @@ export default defineEventHandler(async (event): Promise<OrderResponse> => {
       items: gaItems(products.map(l => ({ product: l.product, qty: l.quantity })), categoryName),
       params: { shipping_tier: body.mode === 'delivery' ? 'delivery' : 'pickup', payment_type: body.payment },
     })
+    if (id !== null) {
+      await sendOpenAiOrder(event, {
+        id: String(id),
+        total,
+        phone: body.phone,
+        lines: products.map(l => ({ id: l.product.id, name: l.product.name, price: l.product.price, quantity: l.quantity })),
+      })
+    }
     return { id, total, gaSent }
   }
   catch (e: unknown) {

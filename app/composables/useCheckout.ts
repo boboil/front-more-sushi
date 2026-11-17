@@ -79,6 +79,7 @@ export function useCheckout() {
         value: res.total,
         params: { ...(res.id ? { transaction_id: String(res.id) } : {}), shipping_tier: shipping, payment_type: form.value.payment },
         skipGa: res.gaSent,
+        phone: form.value.phone,
       })
       return true
     }
