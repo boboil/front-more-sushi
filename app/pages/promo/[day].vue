@@ -20,9 +20,20 @@ const { productById, deliveryCost } = useMenu()
 const now = useKyivClock(() => promo.value?.clock)
 const colors = computed(() => PROMO_COLORS[day.value!.key])
 
+// з акцією Poster товари беремо з її умови (у подарункових днях товари з адмінки — це подарунки, не те, що купувати);
+// для знижки лишаємо добірку з адмінки, якщо вона є
+const rules = computed(() => day.value?.rules ?? null)
+const productIds = computed(() => {
+  const d = day.value
+  if (!d) return []
+  if (!rules.value || (d.offerType === 'percent' && d.productIds.length)) return d.productIds
+  return rules.value.productIds
+})
 const menuProducts = computed<MenuProduct[]>(() =>
-  (day.value?.productIds ?? []).map(id => productById(id)).filter((p): p is MenuProduct => !!p))
-const image = computed(() => day.value?.heroImage || products.value[0]?.image || '/img/logo-big.png')
+  productIds.value.map(id => productById(id)).filter((p): p is MenuProduct => !!p))
+const gifts = computed(() => rules.value?.gifts ?? [])
+const image = computed(() => day.value?.heroImage || products.value[0]?.image
+  || gifts.value[0]?.items?.find(i => i.image)?.image || '/img/logo-big.png')
 
 const days = computed(() => promo.value?.days ?? [])
 const today = computed(() => days.value.find(d => d.weekday === now.value.weekday))
@@ -64,7 +75,7 @@ watch(state, () => refreshNuxtData(MENU_KEY))
 
 const terms = computed(() => {
   const d = day.value!
-  return `Діє ${PROMO_EVERY[d.key]} з ${d.activeFrom} до ${d.activeTo}. ${d.terms ?? ''}`.trim()
+  return `${rules.value && !gifts.value.length ? `${rules.value.text} ` : ''}Діє ${PROMO_EVERY[d.key]} з ${d.activeFrom} до ${d.activeTo}. ${d.terms ?? ''}`.trim()
 })
 
 useHead(() => ({
@@ -133,16 +144,21 @@ useSeoMeta({
       <NuxtLink to="/menu" class="ended__menu">А поки — повне меню →</NuxtLink>
     </section>
 
-    <!-- 2. Товари -->
+    <!-- 2. Подарунок з акції Poster -->
+    <section v-if="gifts.length" :id="products.length ? undefined : 'products'" class="block">
+      <PromoGifts :gifts="gifts" :text="rules!.text" :menu-cta="!products.length" />
+    </section>
+
+    <!-- 3. Товари -->
     <section v-if="products.length" id="products" class="block">
-      <h2 class="block__title">{{ state === 'active' ? 'Товари акції' : `${day.offerTitle.charAt(0).toUpperCase()}${day.offerTitle.slice(1)} — звичайна ціна` }}</h2>
+      <h2 class="block__title">{{ state !== 'active' ? `${day.offerTitle.charAt(0).toUpperCase()}${day.offerTitle.slice(1)} — звичайна ціна` : rules && day.offerType === 'gift' ? 'Що замовити' : 'Товари акції' }}</h2>
       <div class="grid">
         <PromoProductCard
           v-for="p in products"
           :key="p.id"
           :product="p"
           :regular="state !== 'active'"
-          :gift-badge="day.offerType === 'gift' ? day.giftBadge : null"
+          :gift-badge="day.offerType === 'gift' && !gifts.length ? day.giftBadge : null"
         />
       </div>
     </section>
@@ -156,7 +172,7 @@ useSeoMeta({
       </div>
     </section>
 
-    <!-- 3. Умови -->
+    <!-- 4. Умови -->
     <section v-if="state !== 'wrong-day'" class="block">
       <div class="terms">
         <span class="terms__title">Умови акції</span>

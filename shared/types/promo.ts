@@ -27,6 +27,17 @@ export interface PromoDay {
   posterPromotionId?: number | null
   /** товари, ціна яких у меню знижена акцією Poster; [] — знижка лише в кошику; null — акція без Poster (ціни за productIds) */
   discountProductIds?: number[] | null
+  /** умови й подарунки з акції Poster (null — акція без Poster або не діє в Poster) */
+  rules?: PromoRules | null
+}
+
+export interface PromoRules {
+  /** умови словами: «Замовлення від 700 грн — подарунок на вибір: …» */
+  text: string
+  /** подарунки, які додасть заклад (кілька — на вибір) */
+  gifts: PromoGift[]
+  /** що купити для акції; [] — умова на суму, підходить усе меню */
+  productIds: number[]
 }
 
 export interface PromoGift {
