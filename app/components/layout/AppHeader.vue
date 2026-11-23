@@ -5,6 +5,7 @@ const cart = useCart()
 
 const nav = computed(() => categories.value.filter(c => c.slug !== ALL_CATEGORY_SLUG))
 const activeSlug = computed(() => (route.name === 'menu-slug' ? String(route.params.slug) : null))
+const promoLink = usePromoNavLink()
 const label = computed(() => cart.count.value ? `${cart.count.value} · ${formatPrice(cart.total.value)}` : 'Кошик')
 </script>
 
@@ -12,6 +13,14 @@ const label = computed(() => cart.count.value ? `${cart.count.value} · ${format
   <header class="header only-desktop">
     <UiLogo />
     <nav class="header__nav" aria-label="Категорії">
+      <NuxtLink
+        v-if="promoLink"
+        :to="promoLink.to"
+        class="header__link header__link--promo"
+        :class="{ 'header__link--on': route.path === promoLink.to }"
+      >
+        {{ promoLink.label }}
+      </NuxtLink>
       <NuxtLink
         v-for="c in nav"
         :key="c.slug"
@@ -77,6 +86,16 @@ const label = computed(() => cart.count.value ? `${cart.count.value} · ${format
     &:hover {
       color: $black;
       background: $stepper-bg;
+    }
+
+    &--promo {
+      color: $orange-dark;
+      background: $orange-tint;
+
+      &:hover {
+        color: $orange-dark;
+        background: $orange-tint-border;
+      }
     }
 
     &--on,

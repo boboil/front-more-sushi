@@ -39,7 +39,10 @@ export default defineEventHandler(async (event): Promise<OrderResponse> => {
   const subtotal = products.reduce((s, l) => s + l.product.price * l.quantity, 0)
   const isDelivery = body.mode === 'delivery'
   const discount = features.promo ? promoDiscount(body.promoCode, subtotal) : 0
-  const afterDiscount = subtotal - discount
+  // «Акція дня» за правилами Poster: безкоштовні позиції кошика (знижка у % уже в цінах меню)
+  const dayPromo = await fetchPromoQuote(products.map(l => ({ id: l.product.id, quantity: l.quantity })), body.gift)
+  const dayDiscount = dayPromo.active && dayPromo.applied ? dayPromo.extraDiscount ?? 0 : 0
+  const afterDiscount = Math.max(0, subtotal - discount - dayDiscount)
   const bonus = features.bonus && body.useBonus ? Math.min(DEMO_BONUS_BALANCE, afterDiscount) : 0
   const total = afterDiscount - bonus + (isDelivery ? deliveryFee(menu.deliveryCost, subtotal) : 0)
 
@@ -74,6 +77,7 @@ export default defineEventHandler(async (event): Promise<OrderResponse> => {
           quantity: l.quantity,
         })),
         sum: total,
+        ...(dayPromo.active && dayPromo.selectedGift ? { gift: dayPromo.selectedGift } : {}),
         // джерело візиту; бекенд пропускає лише відомі ключі (OrderAttribution::sanitize)
         ...(body.attribution && typeof body.attribution === 'object' ? { attribution: body.attribution } : {}),
       },

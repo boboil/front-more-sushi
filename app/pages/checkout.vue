@@ -39,7 +39,7 @@ function setSticks(id: 'standard' | 'educational', n: number) {
 
 const isDelivery = computed(() => form.value.mode === 'delivery')
 const bonus = computed(() => (features.bonus && form.value.useBonus ? Math.min(DEMO_BONUS_BALANCE, cart.total.value) : 0))
-const delivery = computed(() => (isDelivery.value ? deliveryFee(deliveryCost.value, cart.subtotal.value) : 0))
+const delivery = computed(() => (isDelivery.value ? deliveryFee(deliveryCost.value, cart.fullSubtotal.value) : 0))
 const total = computed(() => cart.total.value - bonus.value + delivery.value)
 const deliveryLabel = computed(() => {
   if (!isDelivery.value) return 'самовиніс'
@@ -174,14 +174,18 @@ async function onSubmit() {
         <div class="co-summary">
           <div class="co-summary__title only-desktop">Ваше замовлення</div>
           <div class="co-summary__lines only-desktop">
-            <div v-for="l in cart.lines.value" :key="l.product.id" class="co-summary__line">
-              <span>{{ l.product.name }} × {{ l.qty }}</span><span>{{ formatPrice(l.sum) }}</span>
+            <div v-for="l in cart.lines.value.filter(x => x.paidQty > 0)" :key="l.product.id" class="co-summary__line">
+              <span>{{ l.product.name }} × {{ l.paidQty }}</span><span>{{ formatPrice(l.sum) }}</span>
+            </div>
+            <div v-for="g in cart.giftLines.value" :key="g.key" class="co-summary__line co-summary__line--gift">
+              <span>{{ g.name }} × {{ g.qty }}</span><span>подарунок</span>
             </div>
           </div>
           <UiToggle v-if="features.bonus" v-model="form.useBonus" class="co-summary__bonus only-desktop">
             <span class="co-bonus__title">Списати бонуси</span>
             <span class="co-bonus__sub">На рахунку {{ formatPrice(DEMO_BONUS_BALANCE) }}</span>
           </UiToggle>
+          <CartDayPromo compact class="co-summary__day-promo" />
           <div class="summary-row only-mobile"><span>Страви ({{ cart.count.value }})</span><span>{{ formatPrice(cart.subtotal.value) }}</span></div>
           <div v-if="cart.discount.value" class="summary-row summary-row--success">
             <span>Промокод {{ cart.promo.value.code }}</span><span>−{{ formatPrice(cart.discount.value) }}</span>
@@ -526,6 +530,11 @@ async function onSubmit() {
 
   &__bonus {
     border-top: 1px solid $divider-card;
+  }
+
+  &__line--gift > :last-child {
+    color: $green-dark;
+    font-weight: 700;
   }
 
   &__total {

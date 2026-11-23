@@ -22,13 +22,17 @@ export function usePromoLink() {
   return (slug: string) => preview ? { path: `/promo/${slug}`, query: { preview } } : `/promo/${slug}`
 }
 
-/** Київський час, що оновлюється щосекунди на клієнті (таймер, зміна стану акції) */
-export function useKyivClock() {
-  const now = ref(kyivNow())
+/**
+ * Київський час, що оновлюється щосекунди на клієнті (таймер, зміна стану акції).
+ * clock — підмінений час бекенду для локального тестування (заморожений, не тікає).
+ */
+export function useKyivClock(clock?: () => string | undefined) {
+  const read = () => kyivNow(clock?.() ? new Date(clock()!) : new Date())
+  const now = ref(read())
   let timer: ReturnType<typeof setInterval> | undefined
   onMounted(() => {
-    now.value = kyivNow()
-    timer = setInterval(() => (now.value = kyivNow()), 1000)
+    now.value = read()
+    timer = setInterval(() => (now.value = read()), 1000)
   })
   onBeforeUnmount(() => clearInterval(timer))
   return now
@@ -37,4 +41,19 @@ export function useKyivClock() {
 export function formatCountdown(seconds: number): string {
   const s = Math.max(0, seconds)
   return [Math.floor(s / 3600), Math.floor((s % 3600) / 60), s % 60].map(n => String(n).padStart(2, '0')).join(':')
+}
+
+/**
+ * Посилання «Акція дня» для меню сайту: на сторінку сьогоднішнього дня, якщо акції ввімкнені в адмінці
+ * і сьогоднішній день активний; інакше null. Сам лендинг показує, чи акція вже/ще діє.
+ */
+export function usePromoNavLink() {
+  const { data } = usePromo()
+  return computed(() => {
+    const promo = data.value
+    if (!promo?.enabled) return null
+    const today = kyivNow(promoClock(promo)).weekday
+    const day = promo.days.find(d => d.weekday === today && d.isActive)
+    return day ? { to: `/promo/${day.slug}`, label: 'Акція дня', offer: day.offerShort, key: day.key } : null
+  })
 }

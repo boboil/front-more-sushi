@@ -23,6 +23,44 @@ export interface PromoDay {
   terms: string | null
   heroImage: string | null
   productIds: number[]
+  /** акція в Poster, за правилами якої рахується кошик (немає — механіку застосовує оператор) */
+  posterPromotionId?: number | null
+  /** товари, ціна яких у меню знижена акцією Poster; [] — знижка лише в кошику; null — акція без Poster (ціни за productIds) */
+  discountProductIds?: number[] | null
+}
+
+export interface PromoGift {
+  /** товар Poster */
+  posterId: number
+  /** картка на сайті, якщо є */
+  productId: number | null
+  name: string
+  price: number
+  /** товари сайту, якими показати подарунок (набір «Дві піци» — дві позиції) */
+  items?: { productId: number, name: string, price: number, image?: string | null }[]
+}
+
+/** Що дасть «Акція дня» кошику (рахує бекенд за правилами акції Poster) */
+export interface PromoQuote {
+  /** зараз діє акція дня, прив'язана до Poster */
+  active: boolean
+  weekday?: number
+  posterPromotionId?: number
+  /** умови виконано */
+  applied?: boolean
+  /** уся знижка акції, грн */
+  discount?: number
+  /** частина знижки, якої ще немає в цінах меню (безкоштовні позиції з кошика) */
+  extraDiscount?: number
+  /** подарунки, які додасть заклад (у кошик їх не кладемо) */
+  gifts?: (PromoGift & { count: number })[]
+  /** з чого обрати подарунок, якщо варіантів кілька */
+  giftOptions?: PromoGift[]
+  selectedGift?: number | null
+  /** позиції кошика, що стають безкоштовними */
+  freeItems?: { productId: number, count: number }[]
+  /** що додати, щоб отримати акцію */
+  hint?: string | null
 }
 
 export interface PromoData {
@@ -30,5 +68,7 @@ export interface PromoData {
   enabled: boolean
   /** відкрито з адмінки за ключем перегляду (?preview=…) */
   preview?: boolean
+  /** лише локально: підмінений час бекенду (php artisan promo:dev --clock=…), ISO */
+  clock?: string
   days: PromoDay[]
 }

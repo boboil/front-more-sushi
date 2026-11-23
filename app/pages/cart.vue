@@ -35,11 +35,14 @@ function reorder() {
     <div v-else class="cart-body">
       <div class="card cart-lines">
         <CartLineItem v-for="l in cart.lines.value" :key="l.product.id" :line="l" />
+        <CartGiftLine v-for="g in cart.giftLines.value" :key="g.key" :gift="g" />
       </div>
 
       <div v-if="features.promo" class="card cart-promo">
         <CartPromoBox />
       </div>
+
+      <CartDayPromo />
 
       <div class="cart-summary">
         <div class="summary-row"><span>Страви</span><span>{{ formatPrice(cart.subtotal.value) }}</span></div>

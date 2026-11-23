@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { categories, promoProducts, heroes } = useMenu()
 const cart = useCart()
+const promoLink = usePromoNavLink()
 
 const tiles = computed(() => categories.value.filter(c => c.slug !== ALL_CATEGORY_SLUG))
 // товари з банера не дублюємо в "Акціях тижня"
@@ -24,6 +25,13 @@ const promos = computed(() => {
     </div>
 
     <div class="home__body">
+      <NuxtLink v-if="promoLink" :to="promoLink.to" class="card home__info home__info--promo">
+        <span>
+          <span class="home__info-title">{{ promoLink.label }}</span>
+          <span class="home__info-sub">{{ promoLink.offer }}</span>
+        </span>
+        <UiIcon name="chevron-left" class="home__info-arrow" />
+      </NuxtLink>
       <MenuReorderCard @reordered="navigateTo('/cart')" />
 
       <section class="home__section">
@@ -186,6 +194,19 @@ const promos = computed(() => {
 
   &__info-title {
     font-weight: 600;
+  }
+
+  &__info--promo {
+    background: $orange-tint;
+    color: $orange-dark;
+
+    .home__info-title {
+      font-weight: 800;
+    }
+
+    .home__info-sub {
+      color: $orange-dark;
+    }
   }
 
   &__info-sub {

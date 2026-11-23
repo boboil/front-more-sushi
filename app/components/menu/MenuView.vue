@@ -25,6 +25,7 @@ onMounted(() => {
 function resetAll() {
   navigateTo(categoryPath(ALL_CATEGORY_SLUG))
 }
+const promoLink = usePromoNavLink()
 </script>
 
 <template>
@@ -37,6 +38,7 @@ function resetAll() {
         <span class="menu-top__count">{{ resultLabel }}</span>
       </div>
       <nav class="cat-pills" aria-label="Категорії">
+        <NuxtLink v-if="promoLink" :to="promoLink.to" class="cat-pill cat-pill--promo">{{ promoLink.label }}</NuxtLink>
         <NuxtLink
           v-for="c in categories"
           :key="c.slug"
@@ -54,6 +56,9 @@ function resetAll() {
     <aside class="menu-side only-desktop">
       <div class="menu-side__group">
         <div class="section-label menu-side__label">Меню</div>
+        <NuxtLink v-if="promoLink" :to="promoLink.to" class="side-cat side-cat--promo">
+          <span>{{ promoLink.label }}</span><span class="side-cat__count">{{ promoLink.offer }}</span>
+        </NuxtLink>
         <NuxtLink
           v-for="c in categories"
           :key="c.slug"
@@ -155,6 +160,21 @@ function resetAll() {
     line-height: 1.1;
   }
 
+  &--promo {
+    color: $orange-dark;
+    background: $orange-tint;
+
+    &:hover {
+      color: $orange-dark;
+      background: $orange-tint-border;
+    }
+
+    .side-cat__count {
+      color: $orange-dark;
+      text-align: right;
+    }
+  }
+
   &__count {
     font-size: 12px;
     color: $text-secondary;
@@ -194,6 +214,14 @@ function resetAll() {
     background: $dark;
     border-color: $dark;
     color: #fff;
+  }
+
+  &--promo,
+  &--promo:hover {
+    background: $orange-tint;
+    border-color: $orange-tint-border;
+    color: $orange-dark;
+    font-weight: 700;
   }
 }
 

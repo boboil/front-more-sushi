@@ -16,8 +16,23 @@ export function useLastOrder() {
 
 export interface CartLine {
   product: MenuProduct
+  /** скільки штук у кошику всього */
   qty: number
+  /** з них платних (решта — подарунок «Акції дня», показується окремим рядком за 0 грн) */
+  paidQty: number
+  /** сума за платні штуки */
   sum: number
+}
+
+/** Рядок-подарунок «Акції дня» (0 грн): окремий товар закладу або безкоштовна штука з кошика */
+export interface CartGiftLine {
+  key: string
+  productId: number | null
+  name: string
+  price: number
+  qty: number
+  /** фото, якщо картки немає в меню (прихована картка подарунка) */
+  image?: string | null
 }
 
 export function useCart() {
@@ -28,22 +43,42 @@ export function useCart() {
   const track = useTrack()
 
   const promo = useState('promo', () => ({ input: '', code: '', error: '' }))
+  const dayPromo = useDayPromo()
+
+  /** безкоштовні штуки «Акції дня» (напр. «Роли 2+1»): товар => кількість */
+  const freeQty = computed(() => {
+    const q = dayPromo.quote.value
+    return new Map((q.active && q.applied ? q.freeItems ?? [] : []).map(f => [f.productId, f.count]))
+  })
 
   const lines = computed<CartLine[]>(() =>
     Object.entries(cart.value ?? {})
       .map(([id, qty]) => {
         const product = productById(Number(id))
-        return product ? { product, qty, sum: product.price * qty } : null
+        if (!product) return null
+        const paidQty = Math.max(0, qty - (freeQty.value.get(product.id) ?? 0))
+        return { product, qty, paidQty, sum: product.price * paidQty }
       })
       .filter((l): l is CartLine => !!l && l.qty > 0),
   )
 
+  /** подарунки рядками по 0 грн: безкоштовні штуки з кошика + товари, які додасть заклад */
+  const giftLines = computed<CartGiftLine[]>(() => [
+    ...lines.value
+      .filter(l => l.qty > l.paidQty)
+      .map(l => ({ key: `free-${l.product.id}`, productId: l.product.id, name: l.product.name, price: l.product.price, qty: l.qty - l.paidQty })),
+    ...dayPromo.giftLines.value,
+  ])
+
   const count = computed(() => lines.value.reduce((s, l) => s + l.qty, 0))
+  /** «Страви»: лише платні штуки (подарунки — окремими рядками по 0 грн) */
   const subtotal = computed(() => lines.value.reduce((s, l) => s + l.sum, 0))
-  const discount = computed(() => (features.promo ? promoDiscount(promo.value.code, subtotal.value) : 0))
-  const delivery = computed(() => deliveryFee(deliveryCost.value, subtotal.value))
+  /** за повними цінами — для безкоштовної доставки, як рахує сервер */
+  const fullSubtotal = computed(() => lines.value.reduce((s, l) => s + l.product.price * l.qty, 0))
+  const discount = computed(() => (features.promo ? promoDiscount(promo.value.code, fullSubtotal.value) : 0))
+  const delivery = computed(() => deliveryFee(deliveryCost.value, fullSubtotal.value))
   /** сума без доставки (доставку додає оформлення залежно від способу отримання) */
-  const total = computed(() => subtotal.value - discount.value)
+  const total = computed(() => Math.max(0, subtotal.value - discount.value))
 
   function qty(id: number): number {
     return cart.value?.[id] ?? 0
@@ -66,6 +101,7 @@ export function useCart() {
   function clear() {
     cart.value = {}
     promo.value = { input: '', code: '', error: '' }
+    dayPromo.gift.value = null
   }
 
   const lastOrderLines = computed(() =>
@@ -92,6 +128,8 @@ export function useCart() {
     lines,
     count,
     subtotal,
+    fullSubtotal,
+    giftLines,
     discount,
     delivery,
     total,
@@ -102,6 +140,8 @@ export function useCart() {
     clear,
     promo,
     applyPromo,
+    /** «Акція дня» за правилами Poster: quote, обраний подарунок, знижка поза цінами меню */
+    dayPromo,
     lastOrder,
     lastOrderLines,
     lastOrderTotal: computed(() => lastOrderLines.value.reduce((s, l) => s + l.product.price * l.qty, 0)),

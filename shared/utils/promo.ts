@@ -48,8 +48,13 @@ export function isWithinHours(day: PromoDay, now = kyivNow()): boolean {
   return now.time >= day.activeFrom && now.time < day.activeTo
 }
 
+/** Час бекенду, якщо його підмінено для локального тестування, інакше справжній */
+export function promoClock(data: PromoData | null | undefined): Date {
+  return data?.clock ? new Date(data.clock) : new Date()
+}
+
 /** Акція, що діє саме зараз (як PromoDays::current() на бекенді) */
-export function currentPromoDay(data: PromoData | null | undefined, now = kyivNow()): PromoDay | null {
+export function currentPromoDay(data: PromoData | null | undefined, now = kyivNow(promoClock(data))): PromoDay | null {
   if (!data?.enabled) return null
   const day = data.days.find(d => d.weekday === now.weekday && d.isActive)
   return day && isWithinHours(day, now) ? day : null

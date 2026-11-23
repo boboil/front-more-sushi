@@ -92,6 +92,8 @@ export interface OrderRequest {
   sticks: { standard: number, educational: number }
   promoCode?: string
   useBonus?: boolean
+  /** обраний подарунок «Акції дня» (товар Poster), якщо варіантів кілька */
+  gift?: number | null
   lines: OrderLine[]
   attribution?: OrderAttribution
 }

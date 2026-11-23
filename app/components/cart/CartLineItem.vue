@@ -16,7 +16,7 @@ const { setQty } = useCart()
       <div class="line__sum">{{ formatPrice(line.sum) }}</div>
     </div>
     <UiStepper
-      :value="line.qty"
+      :value="line.paidQty"
       variant="neutral"
       size="sm"
       @dec="setQty(line.product.id, line.qty - 1)"

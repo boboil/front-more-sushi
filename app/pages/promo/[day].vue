@@ -17,7 +17,7 @@ if (!(promo.value?.enabled || preview.value) || !day.value) {
 }
 
 const { productById, deliveryCost } = useMenu()
-const now = useKyivClock()
+const now = useKyivClock(() => promo.value?.clock)
 const colors = computed(() => PROMO_COLORS[day.value!.key])
 
 const menuProducts = computed<MenuProduct[]>(() =>

@@ -21,9 +21,11 @@ const { public: { features } } = useRuntimeConfig()
     <template v-else>
       <div class="panel__lines">
         <CartLineItem v-for="l in cart.lines.value" :key="l.product.id" :line="l" compact />
+        <CartGiftLine v-for="g in cart.giftLines.value" :key="g.key" :gift="g" compact />
       </div>
       <div class="panel__foot">
         <CartPromoBox v-if="features.promo" compact />
+        <CartDayPromo compact />
         <div class="summary-row panel__row"><span>Страви</span><span>{{ formatPrice(cart.subtotal.value) }}</span></div>
         <div v-if="cart.discount.value" class="summary-row summary-row--success panel__row">
           <span>Знижка</span><span>−{{ formatPrice(cart.discount.value) }}</span>
