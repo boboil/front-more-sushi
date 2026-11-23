@@ -88,13 +88,22 @@ const label = computed(() => cart.count.value ? `${cart.count.value} · ${format
       background: $stepper-bg;
     }
 
+    // «Акція дня»: помаранчевий текст з крапкою, фон — лише при наведенні або коли відкрита (--on)
     &--promo {
+      gap: 7px;
       color: $orange-dark;
-      background: $orange-tint;
+
+      &::before {
+        content: '';
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: $orange;
+      }
 
       &:hover {
         color: $orange-dark;
-        background: $orange-tint-border;
+        background: $orange-tint;
       }
     }
 

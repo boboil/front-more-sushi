@@ -160,21 +160,6 @@ const promoLink = usePromoNavLink()
     line-height: 1.1;
   }
 
-  &--promo {
-    color: $orange-dark;
-    background: $orange-tint;
-
-    &:hover {
-      color: $orange-dark;
-      background: $orange-tint-border;
-    }
-
-    .side-cat__count {
-      color: $orange-dark;
-      text-align: right;
-    }
-  }
-
   &__count {
     font-size: 12px;
     color: $text-secondary;
@@ -216,9 +201,9 @@ const promoLink = usePromoNavLink()
     color: #fff;
   }
 
+  // «Акція дня»: контурна, щоб не виглядала обраною категорією
   &--promo,
   &--promo:hover {
-    background: $orange-tint;
     border-color: $orange-tint-border;
     color: $orange-dark;
     font-weight: 700;
@@ -306,6 +291,22 @@ const promoLink = usePromoNavLink()
   &--on:hover {
     background: $dark;
     color: #fff;
+  }
+
+  // «Акція дня»: помаранчевий текст, фон лише при наведенні
+  &--promo,
+  &--promo:hover {
+    color: $orange-dark;
+  }
+
+  &--promo:hover {
+    background: $orange-tint;
+  }
+
+  &--promo .side-cat__count {
+    max-width: 55%;
+    text-align: right;
+    opacity: 1;
   }
 }
 
